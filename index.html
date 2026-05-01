@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Adım & Hız — TÜBİTAK Bilim Fuarı</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════
+   RESET & TOKENS
+══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0d0d0d;
+  --paper:#f5f2ec;
+  --paper2:#eae6de;
+  --paper3:#ddd8ce;
+  --accent:#c8371a;
+  --accent2:#e85d04;
+  --teal:#006d5b;
+  --teal2:#00a882;
+  --blue:#1a3a6b;
+  --gold:#b8860b;
+  --gold2:#e6ac1a;
+  --muted:#7a7060;
+  --border:#c8bfaa;
+  --r:6px;
+  --rl:12px;
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+
+/* ══════════════════════════════════════════
+   INTRO SCREEN
+══════════════════════════════════════════ */
+#intro{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--ink);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+
+#intro.exit{opacity:0;transform:translateY(-20px);pointer-events:none;}
+
+.intro-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:3px;
+  color:rgba(255,255,255,0.35);
+  text-transform:uppercase;
+  margin-bottom:32px;
+  animation:fadeInUp 0.8s ease 0.3s both;
+}
+
+.intro-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,10vw,96px);
+  color:#fff;
+  letter-spacing:4px;
+  line-height:0.9;
+  text-align:center;
+  animation:fadeInUp 0.8s ease 0.5s both;
+}
+
+.intro-title span{color:var(--accent2);}
+
+/* WALKING TRACK */
+.walk-track{
+  position:relative;
+  width:100%;
+  height:120px;
+  margin-top:40px;
+  overflow:hidden;
+}
+
+.walk-line{
+  position:absolute;
+  bottom:28px;left:0;right:0;
+  height:1px;background:rgba(255,255,255,0.12);
+}
+
+/* SVG Stick Figures */
+.walker{
+  position:absolute;
+  bottom:28px;
+  animation:walkAcross linear infinite;
+}
+
+@keyframes walkAcross{
+  from{transform:translateX(-120px);}
+  to{transform:translateX(calc(100vw + 120px));}
+}
+
+.walker svg .leg1{animation:legSwing1 0.5s ease-in-out infinite alternate;}
+.walker svg .leg2{animation:legSwing2 0.5s ease-in-out infinite alternate;}
+.walker svg .arm1{animation:armSwing1 0.5s ease-in-out infinite alternate;}
+.walker svg .arm2{animation:armSwing2 0.5s ease-in-out infinite alternate;}
+
+@keyframes legSwing1{from{transform:rotate(-20deg);transform-origin:50% 0%;}to{transform:rotate(20deg);transform-origin:50% 0%;}}
+@keyframes legSwing2{from{transform:rotate(20deg);transform-origin:50% 0%;}to{transform:rotate(-20deg);transform-origin:50% 0%;}}
+@keyframes armSwing1{from{transform:rotate(-25deg);transform-origin:50% 0%;}to{transform:rotate(25deg);transform-origin:50% 0%;}}
+@keyframes armSwing2{from{transform:rotate(25deg);transform-origin:50% 0%;}to{transform:rotate(-25deg);transform-origin:50% 0%;}}
+
+/* Speed labels */
+.walker-label{
+  position:absolute;
+  top:-22px;left:50%;transform:translateX(-50%);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  white-space:nowrap;
+  padding:2px 7px;
+  border-radius:99px;
+}
+
+.intro-progress{
+  margin-top:36px;
+  width:200px;height:2px;
+  background:rgba(255,255,255,0.1);
+  border-radius:1px;
+  overflow:hidden;
+  animation:fadeInUp 0.8s ease 1s both;
+}
+
+.intro-progress-bar{
+  height:100%;
+  background:var(--accent2);
+  animation:progressFill 2.2s ease forwards;
+}
+
+@keyframes progressFill{from{width:0%;}to{width:100%;}}
+
+.intro-skip{
+  position:absolute;bottom:28px;right:28px;
+  font-size:12px;color:rgba(255,255,255,0.5);
+  font-family:'IBM Plex Mono',monospace;
+  cursor:pointer;letter-spacing:1px;
+  transition:color 0.2s;
+  z-index:10;
+  padding:10px 16px;
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:4px;
+  background:rgba(255,255,255,0.05);
+  user-select:none;
+}
+.intro-skip:hover{color:#fff;background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);}
+
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ══════════════════════════════════════════
+   MAIN SITE
+══════════════════════════════════════════ */
+#main{opacity:0;transition:opacity 0.6s ease;}
+#main.visible{opacity:1;}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;
+  height:56px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.topbar-brand{
+  display:flex;align-items:center;gap:12px;
+}
+
+.topbar-brand .pill{
+  background:var(--accent);
+  color:#fff;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:2px;
+  padding:4px 10px;
+  border-radius:3px;
+  text-transform:uppercase;
+}
+
+.topbar-brand .title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px;
+  color:#fff;
+  letter-spacing:3px;
+}
+
+.topbar-nav{
+  display:flex;gap:4px;
+}
+
+.tnav{
+  padding:6px 14px;
+  border-radius:4px;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,0.4);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.15s;
+  display:flex;align-items:center;gap:6px;
+  letter-spacing:0.3px;
+}
+
+.tnav:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.06);}
+.tnav.active{background:rgba(255,255,255,0.1);color:#fff;}
+
+/* status dot */
+.tbar-status{
+  display:flex;align-items:center;gap:8px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:rgba(255,255,255,0.3);
+  letter-spacing:0.5px;
+}
+.tbar-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px #22c55e;flex-shrink:0;}
+
+/* ── HERO SECTION ── */
+.hero{
+  background:var(--ink);
+  padding:64px 32px 56px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Grid lines decoration */
+.hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+}
+
+.hero-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 380px;
+  gap:40px;align-items:center;
+  position:relative;z-index:1;
+}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(200,55,26,0.4);
+  border-radius:3px;
+  padding:5px 12px;
+  margin-bottom:22px;
+}
+.hero-tag span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;}
+
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(54px,7vw,88px);
+  color:#fff;
+  letter-spacing:3px;
+  line-height:0.92;
+  margin-bottom:20px;
+}
+
+.hero h1 em{
+  font-style:normal;
+  color:var(--accent2);
+}
+
+.hero-desc{
+  font-size:14px;
+  color:rgba(255,255,255,0.45);
+  line-height:1.7;
+  max-width:440px;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* Hero chart preview */
+.hero-chart-preview{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--rl);
+  padding:20px;
+  position:relative;
+}
+
+.hcp-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:rgba(255,255,255,0.3);
+  letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+/* Mini scatter art */
+.scatter-art{width:100%;height:180px;position:relative;}
+
+.scatter-art svg{width:100%;height:100%;}
+
+.hero-mini-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-top:14px;
+}
+
+.hms{
+  text-align:center;
+  padding:10px 6px;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+
+.hms-v{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;color:#fff;
+  letter-spacing:1px;display:block;
+}
+.hms-l{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+
+/* ── CONTENT AREA ── */
+.content-area{
+  max-width:1100px;margin:0 auto;
+  padding:40px 32px;
+}
+
+/* ── SECTION HEADER ── */
+.sec{display:none;}
+.sec.on{display:block;animation:sectFade 0.3s ease;}
+@keyframes sectFade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.sec-header{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:28px;
+  padding-bottom:16px;
+  border-bottom:2px solid var(--ink);
+}
+
+.sec-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:48px;color:var(--paper3);
+  letter-spacing:2px;line-height:1;
+}
+
+.sec-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px;letter-spacing:2px;
+  color:var(--ink);
+}
+
+.sec-sub{
+  font-size:12px;color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+  margin-left:auto;
+}
+
+/* ── CARDS / PANELS ── */
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--rl);
+  padding:28px;
+  margin-bottom:16px;
+  position:relative;
+}
+
+.card-header{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;font-weight:500;
+  color:var(--muted);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.card-header::before{
+  content:'';width:3px;height:12px;
+  background:var(--accent);
+  border-radius:2px;flex-shrink:0;
+}
+
+/* ── FORM ── */
+label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;font-weight:500;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  display:block;margin-bottom:7px;
+}
+
+input[type=text],input[type=number],select{
+  width:100%;
+  padding:11px 14px;
+  background:var(--paper);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  font-size:14px;
+  font-family:'Space Grotesk',sans-serif;
+  color:var(--ink);
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  appearance:none;-webkit-appearance:none;
+}
+
+input:focus,select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(200,55,26,0.08);
+  background:#fff;
+}
+
+input::placeholder{color:var(--border);font-size:13px;}
+
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7060' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:36px;cursor:pointer;
+}
+
+.fg{margin-bottom:18px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(max-width:600px){.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}}
+
+/* ── BUTTONS ── */
+.brow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px;}
+
+.btn{
+  padding:10px 22px;
+  border-radius:var(--r);
+  border:1.5px solid var(--border);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  background:#fff;color:var(--ink);
+  transition:all 0.15s;
+  display:inline-flex;align-items:center;gap:7px;
+  letter-spacing:0.2px;
+}
+
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,0.1);}
+.btn:active{transform:translateY(0);}
+
+.btn-primary{
+  background:var(--ink);color:#fff;border-color:var(--ink);
+}
+.btn-primary:hover{background:#222;}
+
+.btn-red{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-red:hover{background:#a82c14;}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn-teal:hover{background:#005848;}
+.btn-gold{background:var(--gold2);color:var(--ink);border-color:var(--gold2);font-weight:700;}
+
+.msg-ok{font-size:12px;font-weight:600;color:var(--teal);background:rgba(0,109,91,0.08);border:1px solid rgba(0,109,91,0.2);padding:7px 14px;border-radius:var(--r);font-family:'IBM Plex Mono',monospace;display:none;}
+.msg-err{font-size:12px;font-weight:600;color:var(--accent);background:rgba(200,55,26,0.07);border:1px solid rgba(200,55,26,0.2);padding:7px 14px;border-radius:var(--r);font-family:'IBM Plex Mono',monospace;display:none;}
+.msg-ok.show,.msg-err.show{display:block;}
+
+/* ── FORMULA BOX ── */
+.formula-box{
+  display:grid;grid-template-columns:1fr 1px 1fr;gap:24px;
+  padding:16px 22px;
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  margin-top:14px;
+  align-items:center;
+}
+.formula-divider{background:var(--border);height:40px;}
+.formula-item{}
+.formula-name{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.formula-eq{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink);}
+.formula-eq .var{color:var(--accent);font-weight:500;}
+.formula-eq .op{color:var(--muted);}
+
+/* ── KRONOMETRE ── */
+.krono-hero{
+  background:var(--ink);
+  border-radius:var(--rl);
+  padding:40px 32px;
+  text-align:center;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+}
+
+.krono-hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 100%,rgba(200,55,26,0.12) 0%,transparent 60%),
+    linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:100% 100%,50px 50px,50px 50px;
+  pointer-events:none;
+}
+
+.krono-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:rgba(255,255,255,0.25);
+  letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:28px;
+  position:relative;z-index:1;
+}
+
+.krono-display{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(64px,12vw,100px);
+  color:#fff;letter-spacing:6px;line-height:1;
+  position:relative;z-index:1;
+  text-shadow:0 0 40px rgba(200,55,26,0.3);
+}
+
+.krono-display.running{
+  animation:kronoFlicker 1s ease-in-out infinite;
+}
+
+@keyframes kronoFlicker{
+  0%,100%{text-shadow:0 0 40px rgba(232,93,4,0.4);}
+  50%{text-shadow:0 0 60px rgba(232,93,4,0.7);}
+}
+
+.krono-status{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;color:rgba(255,255,255,0.25);
+  margin:12px 0 28px;
+  min-height:16px;
+  position:relative;z-index:1;
+  letter-spacing:1px;
+}
+
+.krono-btns{
+  display:flex;gap:10px;justify-content:center;
+  position:relative;z-index:1;
+}
+
+/* Adım sayacı */
+.adim-area{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--rl);padding:32px 28px;
+  margin-bottom:16px;text-align:center;
+}
+
+.adim-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:86px;line-height:1;letter-spacing:4px;
+  color:var(--ink);
+  margin:8px 0 24px;
+  position:relative;
+}
+
+.adim-big::after{
+  content:'ADIM';
+  position:absolute;
+  right:-4px;bottom:10px;
+  font-size:11px;letter-spacing:3px;
+  color:var(--muted);font-family:'IBM Plex Mono',monospace;
+}
+
+.krono-meta{
+  display:flex;justify-content:center;gap:32px;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);
+  margin:14px 0 6px;
+}
+.krono-meta .val{color:var(--ink);font-weight:500;}
+
+/* ── TABLE ── */
+.tbl-outer{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
+
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+
+thead{background:var(--ink);}
+th{padding:12px 14px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+
+td{padding:12px 14px;border-bottom:1px solid var(--paper2);color:var(--ink);transition:background 0.12s;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--paper);}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;}
+.by{background:rgba(0,109,91,0.1);color:var(--teal);}
+.bn{background:rgba(26,58,107,0.1);color:var(--blue);}
+.bh{background:rgba(200,55,26,0.1);color:var(--accent);}
+
+.del{background:none;border:none;color:var(--border);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;transition:all 0.12s;}
+.del:hover{background:rgba(200,55,26,0.1);color:var(--accent);}
+
+/* mono cells */
+.mc{font-family:'IBM Plex Mono',monospace;font-size:12px;}
+.mc-red{color:var(--accent);font-weight:500;}
+.mc-teal{color:var(--teal);font-weight:500;}
+
+/* ── CHARTS ── */
+.chart-wrap{
+  background:#fff;border:1px solid var(--border);border-radius:var(--rl);
+  padding:24px;margin-bottom:16px;
+}
+
+.chart-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
+
+.chart-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:2px;color:var(--ink);
+}
+
+.chart-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:2px;}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;}
+.li{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);font-weight:500;}
+.ldot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+
+/* ── METRICS ── */
+.metrics-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:24px;
+}
+@media(max-width:600px){.metrics-row{grid-template-columns:1fr 1fr;}}
+
+.metric{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 16px;
+  position:relative;overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.metric:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.07);}
+
+.metric-top{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:var(--muted);
+  letter-spacing:1.2px;text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.metric-val{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:38px;letter-spacing:2px;
+  color:var(--ink);line-height:1;
+}
+
+.metric-unit{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);
+  margin-top:4px;
+}
+
+.metric-bar{height:3px;position:absolute;bottom:0;left:0;right:0;border-radius:0 0 var(--r) var(--r);}
+
+/* ── RESULT CARD ── */
+.result-card{
+  background:#fff;border:1px solid var(--border);border-radius:var(--rl);
+  padding:28px;margin-bottom:16px;
+}
+
+.result-header{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;letter-spacing:2px;color:var(--ink);
+  margin-bottom:16px;padding-bottom:14px;
+  border-bottom:2px solid var(--ink);
+  display:flex;align-items:center;gap:12px;
+}
+
+.result-body{font-size:14px;line-height:1.85;color:var(--ink);}
+.result-body .hl{font-weight:700;}
+.result-body .num{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-weight:500;}
+.result-body .num-t{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-weight:500;}
+.result-body .num-b{font-family:'IBM Plex Mono',monospace;color:var(--blue);font-weight:500;}
+.result-body p{margin-bottom:10px;}
+
+.result-table-mini{
+  margin-top:16px;padding-top:16px;
+  border-top:1px solid var(--paper2);
+}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-big{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--paper3);margin-bottom:8px;}
+.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:var(--ink);
+  color:rgba(255,255,255,0.25);
+  text-align:center;
+  padding:24px 32px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-top:48px;
+}
+
+/* ── REPLAY BUTTON ── */
+.replay-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;
+  border-radius:4px;
+  border:1px solid rgba(200,55,26,0.4);
+  background:rgba(200,55,26,0.1);
+  color:#e85d04;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11px;font-weight:600;
+  cursor:pointer;
+  transition:all 0.15s;
+  letter-spacing:0.5px;
+  white-space:nowrap;
+}
+.replay-btn:hover{background:rgba(200,55,26,0.2);border-color:rgba(232,93,4,0.6);transform:scale(1.03);}
+
+/* ── INTRO OVERLAY (replay) ── */
+#intro.replay{
+  display:flex !important;
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+#intro.replay.visible{opacity:1;}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--paper);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     INTRO SCREEN
+════════════════════════════════════ -->
+<div id="intro">
+  <div class="intro-label">TÜBİTAK · Bilim Fuarları · Araştırma Projesi</div>
+  <div class="intro-title">ADIM<br>& <span>HIZ</span></div>
+
+  <!-- Walking figures track -->
+  <div class="walk-track">
+    <div class="walk-line"></div>
+
+    <!-- SLOW walker -->
+    <div class="walker" style="animation-duration:9s;animation-delay:0s;">
+      <div class="walker-label" style="background:rgba(0,168,130,0.2);color:#00a882;">YAVAŞ · 0.8 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60">
+        <!-- Head -->
+        <circle cx="18" cy="8" r="6" fill="none" stroke="#00a882" stroke-width="2"/>
+        <!-- Body -->
+        <line x1="18" y1="14" x2="18" y2="36" stroke="#00a882" stroke-width="2"/>
+        <!-- Arms -->
+        <g class="arm1"><line x1="18" y1="20" x2="6" y2="30" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="arm2"><line x1="18" y1="20" x2="30" y2="30" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g>
+        <!-- Legs -->
+        <g class="leg1"><line x1="18" y1="36" x2="8" y2="52" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="leg2"><line x1="18" y1="36" x2="28" y2="52" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g>
+      </svg>
+    </div>
+
+    <!-- NORMAL walker -->
+    <div class="walker" style="animation-duration:6s;animation-delay:-2s;">
+      <div class="walker-label" style="background:rgba(26,58,107,0.3);color:#6b9bdf;">NORMAL · 1.4 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60">
+        <circle cx="18" cy="8" r="6" fill="none" stroke="#6b9bdf" stroke-width="2"/>
+        <line x1="18" y1="14" x2="18" y2="36" stroke="#6b9bdf" stroke-width="2"/>
+        <g class="arm1"><line x1="18" y1="20" x2="5" y2="28" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="arm2"><line x1="18" y1="20" x2="31" y2="28" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="leg1"><line x1="18" y1="36" x2="6" y2="54" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="leg2"><line x1="18" y1="36" x2="30" y2="54" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g>
+      </svg>
+    </div>
+
+    <!-- FAST walker -->
+    <div class="walker" style="animation-duration:3.5s;animation-delay:-1s;">
+      <div class="walker-label" style="background:rgba(200,55,26,0.2);color:#e85d04;">HIZLI · 2.2 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60">
+        <circle cx="18" cy="8" r="6" fill="none" stroke="#e85d04" stroke-width="2.5"/>
+        <line x1="18" y1="14" x2="18" y2="36" stroke="#e85d04" stroke-width="2.5"/>
+        <g class="arm1"><line x1="18" y1="19" x2="3" y2="26" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g>
+        <g class="arm2"><line x1="18" y1="19" x2="33" y2="26" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g>
+        <g class="leg1"><line x1="18" y1="36" x2="4" y2="55" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g>
+        <g class="leg2"><line x1="18" y1="36" x2="32" y2="55" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g>
+      </svg>
+    </div>
+
+    <!-- Extra slow -->
+    <div class="walker" style="animation-duration:11s;animation-delay:-5s;">
+      <div class="walker-label" style="background:rgba(0,168,130,0.15);color:#00a882;">YAVAŞ · 0.7 m/s</div>
+      <svg width="32" height="54" viewBox="0 0 36 60">
+        <circle cx="18" cy="8" r="6" fill="none" stroke="#00a882" stroke-width="1.8" opacity="0.7"/>
+        <line x1="18" y1="14" x2="18" y2="36" stroke="#00a882" stroke-width="1.8" opacity="0.7"/>
+        <g class="arm1"><line x1="18" y1="20" x2="6" y2="30" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>
+        <g class="arm2"><line x1="18" y1="20" x2="30" y2="30" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>
+        <g class="leg1"><line x1="18" y1="36" x2="8" y2="52" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>
+        <g class="leg2"><line x1="18" y1="36" x2="28" y2="52" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/></g>
+      </svg>
+    </div>
+
+    <!-- Extra fast -->
+    <div class="walker" style="animation-duration:2.8s;animation-delay:-0.5s;">
+      <div class="walker-label" style="background:rgba(200,55,26,0.15);color:#c8371a;font-weight:700;">KOŞU · 3.0 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60">
+        <circle cx="18" cy="8" r="6" fill="none" stroke="#c8371a" stroke-width="3"/>
+        <line x1="18" y1="14" x2="18" y2="36" stroke="#c8371a" stroke-width="3"/>
+        <g class="arm1"><line x1="18" y1="18" x2="1" y2="23" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g>
+        <g class="arm2"><line x1="18" y1="18" x2="35" y2="23" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g>
+        <g class="leg1"><line x1="18" y1="36" x2="2" y2="56" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g>
+        <g class="leg2"><line x1="18" y1="36" x2="34" y2="56" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="intro-progress"><div class="intro-progress-bar"></div></div>
+  <div class="intro-skip" onclick="skipIntro()">ATLA →</div>
+</div>
+
+<!-- ════════════════════════════════════
+     MAIN SITE
+════════════════════════════════════ -->
+<div id="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="pill">TÜBİTAK</div>
+      <div class="title">ADIM & HIZ</div>
+    </div>
+    <div class="topbar-nav">
+      <button class="tnav active" onclick="st('veri')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4Z"/></svg>Veri Gir
+      </button>
+      <button class="tnav" onclick="st('krono')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>Kronometre
+      </button>
+      <button class="tnav" onclick="st('tablo')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Tablo
+      </button>
+      <button class="tnav" onclick="st('grafik')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grafik
+      </button>
+      <button class="tnav" onclick="st('sonuc')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Sonuç
+      </button>
+    </div>
+    <div class="tbar-status">
+      <div class="tbar-dot"></div>
+      <span id="status-txt">Yerel depolama aktif</span>
+    </div>
+    <button class="replay-btn" onclick="replayIntro()" title="Açılış animasyonunu tekrar izle">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Tanıtım
+    </button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tag"><span>Araştırma · Matematik · STEAM</span></div>
+        <h1>ADIM<br>UZUNLUĞU<br><em>&amp; HIZ</em></h1>
+        <p class="hero-desc">// Yürüyüş hızı arttıkça adım uzunluğu<br>nasıl değişir? Bilimsel ölçüm, analiz<br>ve görselleştirme aracı.</p>
+      </div>
+      <div class="hero-chart-preview">
+        <div class="hcp-label">Örnek Scatter — Hız vs Adım Uzunluğu</div>
+        <div class="scatter-art">
+          <svg viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <!-- Grid -->
+            <line x1="30" y1="10" x2="30" y2="155" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="30" y1="155" x2="320" y2="155" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="30" y1="120" x2="320" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="30" y1="85" x2="320" y2="85" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="30" y1="50" x2="320" y2="50" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="110" y1="10" x2="110" y2="155" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="190" y1="10" x2="190" y2="155" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="270" y1="10" x2="270" y2="155" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4 4"/>
+            <!-- Trend line -->
+            <line x1="50" y1="138" x2="310" y2="25" stroke="rgba(232,93,4,0.4)" stroke-width="1.5" stroke-dasharray="6 4"/>
+            <!-- Yavaş dots -->
+            <circle cx="55" cy="135" r="6" fill="#00a882" opacity="0.85"/>
+            <circle cx="72" cy="128" r="6" fill="#00a882" opacity="0.85"/>
+            <circle cx="85" cy="130" r="6" fill="#00a882" opacity="0.85"/>
+            <circle cx="98" cy="122" r="6" fill="#00a882" opacity="0.85"/>
+            <!-- Normal dots -->
+            <circle cx="135" cy="100" r="6" fill="#6b9bdf" opacity="0.85"/>
+            <circle cx="155" cy="92" r="6" fill="#6b9bdf" opacity="0.85"/>
+            <circle cx="168" cy="96" r="6" fill="#6b9bdf" opacity="0.85"/>
+            <circle cx="182" cy="86" r="6" fill="#6b9bdf" opacity="0.85"/>
+            <!-- Hızlı dots -->
+            <circle cx="220" cy="62" r="6" fill="#e85d04" opacity="0.85"/>
+            <circle cx="240" cy="54" r="6" fill="#e85d04" opacity="0.85"/>
+            <circle cx="258" cy="48" r="6" fill="#e85d04" opacity="0.85"/>
+            <circle cx="278" cy="38" r="6" fill="#e85d04" opacity="0.85"/>
+            <!-- Axis labels -->
+            <text x="170" y="172" fill="rgba(255,255,255,0.2)" font-size="9" font-family="monospace" text-anchor="middle">Hız (m/s) →</text>
+            <text x="14" y="90" fill="rgba(255,255,255,0.2)" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90,14,90)">Adım (m)</text>
+          </svg>
+        </div>
+        <div class="hero-mini-stats">
+          <div class="hms"><span class="hms-v" id="h-m1">0</span><span class="hms-l">Ölçüm</span></div>
+          <div class="hms"><span class="hms-v" id="h-m2">—</span><span class="hms-l">Ort. Hız</span></div>
+          <div class="hms"><span class="hms-v" id="h-m3">—</span><span class="hms-l">Ort. Adım</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <!-- VERİ GİR -->
+    <div class="sec on" id="sec-veri">
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title">Veri Girişi</div>
+        <div class="sec-sub">// Ölçüm verilerini kaydedin</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Öğrenci Ölçümü</div>
+        <div class="fg"><label>Öğrenci Adı</label><input type="text" id="ad" placeholder="ör. Ahmet K."/></div>
+        <div class="g3">
+          <div class="fg">
+            <label>Tempo</label>
+            <select id="tempo">
+              <option value="yavas">🐢 Yavaş</option>
+              <option value="normal">🚶 Normal</option>
+              <option value="hizli">🏃 Hızlı</option>
+            </select>
+          </div>
+          <div class="fg"><label>Mesafe (m)</label><input type="number" id="mesafe" value="20" min="1"/></div>
+          <div class="fg"><label>Süre (sn)</label><input type="number" id="sure" placeholder="ör. 18.5" step="0.1" min="0.1"/></div>
+        </div>
+        <div class="fg"><label>Adım Sayısı</label><input type="number" id="adim" placeholder="kaç adım?" min="1"/></div>
+        <div class="brow">
+          <button class="btn btn-primary" onclick="ekle()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Kaydet
+          </button>
+          <button class="btn" onclick="kronoVeriDoldur()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+            Kronometreden doldur
+          </button>
+          <div class="msg-ok" id="msg-ok">✓ Kaydedildi!</div>
+          <div class="msg-err" id="msg-err">Tüm alanları doldurun.</div>
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-item">
+          <div class="formula-name">Hız Hesabı</div>
+          <div class="formula-eq"><span class="var">v</span> <span class="op">=</span> mesafe <span class="op">÷</span> süre &nbsp;<span class="op">[m/s]</span></div>
+        </div>
+        <div class="formula-divider"></div>
+        <div class="formula-item">
+          <div class="formula-name">Adım Uzunluğu</div>
+          <div class="formula-eq"><span class="var">L</span> <span class="op">=</span> mesafe <span class="op">÷</span> adım_sayısı &nbsp;<span class="op">[m]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KRONOMETRE -->
+    <div class="sec" id="sec-krono">
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title">Kronometre</div>
+        <div class="sec-sub">// Süre ve adım ölçümü</div>
+      </div>
+
+      <div class="krono-hero">
+        <div class="krono-tag">SÜRE ÖLÇÜMLEYİCİ</div>
+        <div class="krono-display" id="kd">00:00.0</div>
+        <div class="krono-status" id="ksub">Başlatmak için hazır</div>
+        <div class="krono-btns">
+          <button class="btn btn-red" id="kbtn" onclick="kronoToggle()">▶ BAŞLAT</button>
+          <button class="btn" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);" onclick="kronoSifirla()">↺ Sıfırla</button>
+        </div>
+      </div>
+
+      <div class="adim-area">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Adım Sayacı</div>
+        <div class="adim-big" id="adim-count">0</div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <button class="btn btn-primary" style="font-size:18px;padding:16px 40px;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;" onclick="adimEkle()">+1 ADIM</button>
+          <button class="btn" onclick="adimSifirla()">↺ Sıfırla</button>
+        </div>
+      </div>
+
+      <div class="krono-meta">
+        <span>Kaydedilen süre: <span class="val" id="k-sure">—</span> sn</span>
+        <span>Adım sayısı: <span class="val" id="k-adim">—</span></span>
+      </div>
+
+      <div class="brow" style="justify-content:center;margin-top:16px;">
+        <button class="btn btn-teal" onclick="kronoVeriGonder()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Veri Gir'e Aktar
+        </button>
+      </div>
+    </div>
+
+    <!-- TABLO -->
+    <div class="sec" id="sec-tablo">
+      <div class="sec-header">
+        <div class="sec-num">03</div>
+        <div class="sec-title">Veri Tablosu</div>
+        <div class="sec-sub">// Kaydedilen tüm ölçümler</div>
+      </div>
+      <div class="tbl-outer" id="tablo-wrap">
+        <div class="empty"><div class="empty-big">VERİ YOK</div><div class="empty-sub">// Veri Gir sekmesinden başlayın</div></div>
+      </div>
+      <div class="brow" id="tablo-actions" style="display:none;margin-top:16px;">
+        <button class="btn btn-teal" onclick="excelIndir()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel İndir (.csv)
+        </button>
+        <button class="btn btn-red" onclick="temizle()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Tümünü Sil
+        </button>
+      </div>
+    </div>
+
+    <!-- GRAFİK -->
+    <div class="sec" id="sec-grafik">
+      <div class="sec-header">
+        <div class="sec-num">04</div>
+        <div class="sec-title">Grafik Analizi</div>
+        <div class="sec-sub">// Verinin görsel temsili</div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-top">
+          <div>
+            <div class="chart-name">HIZ — ADIM UZUNLUĞU DAĞILIMI</div>
+            <div class="chart-sub">// Her nokta bir ölçümü temsil eder</div>
+          </div>
+          <div class="legend">
+            <div class="li"><div class="ldot" style="background:var(--teal);"></div>Yavaş</div>
+            <div class="li"><div class="ldot" style="background:var(--blue);"></div>Normal</div>
+            <div class="li"><div class="ldot" style="background:var(--accent);"></div>Hızlı</div>
+          </div>
+        </div>
+        <div style="position:relative;width:100%;height:280px;"><canvas id="chart-scatter"></canvas></div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-top">
+          <div>
+            <div class="chart-name">TEMPO KARŞILAŞTIRMASI</div>
+            <div class="chart-sub">// Ortalama adım uzunlukları</div>
+          </div>
+        </div>
+        <div style="position:relative;width:100%;height:200px;"><canvas id="chart-bar"></canvas></div>
+      </div>
+
+      <div id="grafik-bos" class="empty" style="display:none;"><div class="empty-big">GRAFİK YOK</div><div class="empty-sub">// En az 2 ölçüm gerekli</div></div>
+    </div>
+
+    <!-- SONUÇ -->
+    <div class="sec" id="sec-sonuc">
+      <div class="sec-header">
+        <div class="sec-num">05</div>
+        <div class="sec-title">Sonuç & Rapor</div>
+        <div class="sec-sub">// Bilimsel analiz ve çıktı</div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric">
+          <div class="metric-top">Toplam Ölçüm</div>
+          <div class="metric-val" id="sm1">0</div>
+          <div class="metric-unit">adet</div>
+          <div class="metric-bar" style="background:var(--ink);"></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top">Ort. Hız</div>
+          <div class="metric-val" id="sm2">—</div>
+          <div class="metric-unit">m/s</div>
+          <div class="metric-bar" style="background:var(--accent);"></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top">Ort. Adım Uzunluğu</div>
+          <div class="metric-val" id="sm3">—</div>
+          <div class="metric-unit">metre</div>
+          <div class="metric-bar" style="background:var(--teal);"></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top">Hız:Adım Oranı</div>
+          <div class="metric-val" id="sm4">—</div>
+          <div class="metric-unit">oran</div>
+          <div class="metric-bar" style="background:var(--gold2);"></div>
+        </div>
+      </div>
+
+      <div id="sonuc-yorum">
+        <div class="empty"><div class="empty-big">ANALİZ YOK</div><div class="empty-sub">// Yorum için veri girin</div></div>
+      </div>
+
+      <hr class="divider"/>
+
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:14px;">PROJE RAPORU</div>
+
+      <div id="rapor-content">
+        <div class="empty"><div class="empty-big">RAPOR YOK</div><div class="empty-sub">// En az 3 ölçüm gerekli</div></div>
+      </div>
+
+      <div class="brow" id="rapor-actions" style="display:none;margin-top:16px;">
+        <button class="btn btn-primary" onclick="raporIndir()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Raporu İndir (.txt)
+        </button>
+        <button class="btn btn-teal" onclick="excelIndir()">Excel'e Aktar</button>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <div class="site-footer">
+    TÜBİTAK Bilim Fuarları Destekleme Programı &nbsp;·&nbsp; Adım Uzunluğu & Hız İlişkisi &nbsp;·&nbsp; Araştırma Projesi
+  </div>
+
+</div><!-- /main -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ═══════════════════════════
+   INTRO
+═══════════════════════════ */
+let introSkipped = false;
+
+function closeIntro(){
+  const intro = document.getElementById('intro');
+  introSkipped = true;
+  intro.style.transition = 'opacity 0.5s ease';
+  intro.style.opacity = '0';
+  setTimeout(()=>{
+    intro.style.display = 'none';
+    intro.style.opacity = '';
+    intro.style.transition = '';
+    document.getElementById('main').classList.add('visible');
+  }, 500);
+}
+
+function skipIntro(){ closeIntro(); }
+
+function replayIntro(){
+  const intro = document.getElementById('intro');
+  introSkipped = false;
+  intro.style.display = 'flex';
+  intro.style.opacity = '0';
+  intro.classList.remove('exit');
+  void intro.offsetWidth;
+  intro.style.transition = 'opacity 0.4s ease';
+  intro.style.opacity = '1';
+
+  // Reset progress bar
+  const bar = intro.querySelector('.intro-progress-bar');
+  bar.style.animation = 'none';
+  void bar.offsetWidth;
+  bar.style.animation = 'progressFill 2.2s ease forwards';
+
+  // Manuel replay: otomatik kapanmaz, sadece ATLA ile çıkılır
+}
+
+// İlk açılışta otomatik kapat (3.2sn)
+setTimeout(()=>{ if(!introSkipped) closeIntro(); }, 3200);
+
+/* ═══════════════════════════
+   STORAGE
+═══════════════════════════ */
+const SK = 'tubitak_adim_v3';
+let veriler = [];
+try{ const s=localStorage.getItem(SK); if(s) veriler=JSON.parse(s); }catch(e){ veriler=[]; }
+
+let chartS=null, chartB=null;
+let kronoInterval=null, kronoMs=0, kronoCalisiyor=false, kronoAdim=0;
+
+function kaydet(){
+  try{ localStorage.setItem(SK, JSON.stringify(veriler)); }catch(e){}
+  setStatus('Kaydedildi · '+veriler.length+' kayıt');
+  updateStats();
+}
+
+function setStatus(t){ document.getElementById('status-txt').textContent=t; }
+
+function updateStats(){
+  const n = veriler.length;
+  document.getElementById('h-m1').textContent = n;
+  document.getElementById('sm1').textContent = n;
+  if(!n){
+    ['h-m2','h-m3','sm2','sm3','sm4'].forEach(id=>document.getElementById(id).textContent='—');
+    return;
+  }
+  const ortH = (veriler.reduce((s,v)=>s+v.hiz,0)/n).toFixed(2);
+  const ortA = (veriler.reduce((s,v)=>s+v.adimUz,0)/n).toFixed(2);
+  const oran = (ortH/ortA).toFixed(2);
+  document.getElementById('h-m2').textContent = ortH;
+  document.getElementById('h-m3').textContent = ortA;
+  document.getElementById('sm2').textContent = ortH;
+  document.getElementById('sm3').textContent = ortA;
+  document.getElementById('sm4').textContent = oran+':1';
+}
+
+window.addEventListener('load',()=>{
+  setStatus('Yerel depolama aktif · '+veriler.length+' kayıt');
+  updateStats();
+});
+
+/* ═══════════════════════════
+   TABS
+═══════════════════════════ */
+function st(t){
+  const tabs=['veri','krono','tablo','grafik','sonuc'];
+  document.querySelectorAll('.tnav').forEach((el,i)=>el.classList.toggle('active',tabs[i]===t));
+  tabs.forEach(s=>{
+    document.getElementById('sec-'+s).classList.toggle('on',s===t);
+  });
+  if(t==='tablo') renderTablo();
+  if(t==='grafik') renderGrafik();
+  if(t==='sonuc') renderSonuc();
+}
+
+/* ═══════════════════════════
+   VERİ
+═══════════════════════════ */
+function ekle(){
+  const ad=document.getElementById('ad').value.trim()||'Öğrenci '+(veriler.length+1);
+  const tempo=document.getElementById('tempo').value;
+  const mesafe=parseFloat(document.getElementById('mesafe').value);
+  const sure=parseFloat(document.getElementById('sure').value);
+  const adim=parseInt(document.getElementById('adim').value);
+  const mok=document.getElementById('msg-ok');
+  const merr=document.getElementById('msg-err');
+
+  if(!mesafe||!sure||!adim||sure<=0||adim<=0){
+    merr.classList.add('show'); mok.classList.remove('show');
+    setTimeout(()=>merr.classList.remove('show'),2500); return;
+  }
+
+  const hiz=+(mesafe/sure).toFixed(3);
+  const adimUz=+(mesafe/adim).toFixed(3);
+  veriler.push({ad,tempo,mesafe,sure,adim,hiz,adimUz});
+  kaydet();
+
+  mok.classList.add('show'); merr.classList.remove('show');
+  document.getElementById('sure').value='';
+  document.getElementById('adim').value='';
+  document.getElementById('ad').value='';
+  setTimeout(()=>mok.classList.remove('show'),2500);
+}
+
+/* ═══════════════════════════
+   KRONO
+═══════════════════════════ */
+function kronoToggle(){
+  if(kronoCalisiyor){
+    clearInterval(kronoInterval); kronoCalisiyor=false;
+    document.getElementById('kbtn').textContent='▶ DEVAM ET';
+    document.getElementById('ksub').textContent='— duraklatıldı';
+    document.getElementById('kd').classList.remove('running');
+    document.getElementById('k-sure').textContent=(kronoMs/1000).toFixed(1);
+    document.getElementById('k-adim').textContent=kronoAdim;
+  } else {
+    const start=Date.now()-kronoMs;
+    kronoCalisiyor=true;
+    document.getElementById('kbtn').textContent='⏸ DURDUR';
+    document.getElementById('ksub').textContent='● ölçüm yapılıyor...';
+    document.getElementById('kd').classList.add('running');
+    kronoInterval=setInterval(()=>{
+      kronoMs=Date.now()-start;
+      const m=Math.floor(kronoMs/60000), s=Math.floor((kronoMs%60000)/1000), t=Math.floor((kronoMs%1000)/100);
+      document.getElementById('kd').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+t;
+    },100);
+  }
+}
+
+function kronoSifirla(){
+  clearInterval(kronoInterval); kronoCalisiyor=false; kronoMs=0;
+  document.getElementById('kd').textContent='00:00.0';
+  document.getElementById('kd').classList.remove('running');
+  document.getElementById('kbtn').textContent='▶ BAŞLAT';
+  document.getElementById('ksub').textContent='Başlatmak için hazır';
+  document.getElementById('k-sure').textContent='—';
+}
+
+function adimEkle(){ kronoAdim++; document.getElementById('adim-count').textContent=kronoAdim; document.getElementById('k-adim').textContent=kronoAdim; }
+function adimSifirla(){ kronoAdim=0; document.getElementById('adim-count').textContent=0; document.getElementById('k-adim').textContent='—'; }
+
+function kronoVeriDoldur(){
+  if(kronoMs>0) document.getElementById('sure').value=(kronoMs/1000).toFixed(1);
+  if(kronoAdim>0) document.getElementById('adim').value=kronoAdim;
+  st('veri');
+}
+function kronoVeriGonder(){ kronoVeriDoldur(); }
+
+/* ═══════════════════════════
+   TABLO
+═══════════════════════════ */
+function renderTablo(){
+  const w=document.getElementById('tablo-wrap'), act=document.getElementById('tablo-actions');
+  if(!veriler.length){
+    w.innerHTML='<div class="empty"><div class="empty-big">VERİ YOK</div><div class="empty-sub">// Veri Gir sekmesinden başlayın</div></div>';
+    act.style.display='none'; return;
+  }
+  act.style.display='flex';
+  let h='<table><thead><tr><th>#</th><th>Ad</th><th>Tempo</th><th>Mesafe</th><th>Süre</th><th>Adım</th><th>Hız (m/s)</th><th>Adım Uz. (m)</th><th></th></tr></thead><tbody>';
+  veriler.forEach((v,i)=>{
+    const bc=v.tempo==='yavas'?'by':v.tempo==='normal'?'bn':'bh';
+    const bl=v.tempo==='yavas'?'🐢 YAVAŞ':v.tempo==='normal'?'🚶 NORMAL':'🏃 HIZLI';
+    h+=`<tr>
+      <td class="mc" style="color:var(--muted);">${String(i+1).padStart(2,'0')}</td>
+      <td style="font-weight:600;">${v.ad}</td>
+      <td><span class="badge ${bc}">${bl}</span></td>
+      <td class="mc">${v.mesafe} m</td>
+      <td class="mc">${v.sure} s</td>
+      <td class="mc">${v.adim}</td>
+      <td class="mc mc-red">${v.hiz}</td>
+      <td class="mc mc-teal">${v.adimUz}</td>
+      <td><button class="del" onclick="sil(${i})">✕</button></td>
+    </tr>`;
+  });
+  h+='</tbody></table>';
+  w.innerHTML=h;
+}
+
+function sil(i){ veriler.splice(i,1); kaydet(); renderTablo(); }
+function temizle(){ if(confirm('Tüm veriler silinsin mi?')){ veriler=[]; kaydet(); renderTablo(); } }
+
+/* ═══════════════════════════
+   GRAFİK
+═══════════════════════════ */
+Chart.defaults.color='#7a7060';
+Chart.defaults.borderColor='rgba(0,0,0,0.06)';
+
+function renderGrafik(){
+  const bos=document.getElementById('grafik-bos');
+  if(veriler.length<2){ bos.style.display='block'; return; }
+  bos.style.display='none';
+
+  const colors={yavas:'#006d5b',normal:'#1a3a6b',hizli:'#c8371a'};
+  const ds=['yavas','normal','hizli'].map(t=>({
+    label:t==='yavas'?'Yavaş':t==='normal'?'Normal':'Hızlı',
+    data:veriler.filter(v=>v.tempo===t).map(v=>({x:v.hiz,y:v.adimUz})),
+    backgroundColor:colors[t]+'cc', borderColor:colors[t],
+    pointRadius:9, pointHoverRadius:13, showLine:false
+  }));
+
+  if(chartS) chartS.destroy();
+  chartS = new Chart(document.getElementById('chart-scatter'),{
+    type:'scatter', data:{datasets:ds},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0d0d0d', borderColor:'rgba(255,255,255,0.1)', borderWidth:1,
+          titleColor:'rgba(255,255,255,0.5)', bodyColor:'#fff',
+          padding:12,
+          callbacks:{label:d=>`  Hız: ${d.raw.x} m/s  |  Adım: ${d.raw.y} m`}
+        }
+      },
+      scales:{
+        x:{title:{display:true,text:'Hız (m/s)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}},
+        y:{title:{display:true,text:'Adım Uzunluğu (m)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}}
+      }
+    }
+  });
+
+  const tempos=['yavas','normal','hizli'], labels=['Yavaş','Normal','Hızlı'], cols=['#006d5b','#1a3a6b','#c8371a'];
+  const bdata=tempos.map(t=>{const g=veriler.filter(v=>v.tempo===t);return g.length?+(g.reduce((s,v)=>s+v.adimUz,0)/g.length).toFixed(3):null;});
+
+  if(chartB) chartB.destroy();
+  chartB = new Chart(document.getElementById('chart-bar'),{
+    type:'bar',
+    data:{labels,datasets:[{data:bdata,backgroundColor:cols.map(c=>c+'cc'),borderColor:cols,borderWidth:1.5,borderRadius:4,borderSkipped:false}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0d0d0d', borderColor:'rgba(255,255,255,0.1)', borderWidth:1,
+          bodyColor:'#fff', padding:10,
+          callbacks:{label:d=>`  Ort. adım uzunluğu: ${d.raw} m`}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#7a7060'}},
+        y:{title:{display:true,text:'Ort. Adım Uzunluğu (m)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}}
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════
+   SONUÇ
+═══════════════════════════ */
+function renderSonuc(){
+  updateStats();
+  const empty=(t,s)=>`<div class="empty"><div class="empty-big">${t}</div><div class="empty-sub">${s}</div></div>`;
+
+  if(!veriler.length){
+    document.getElementById('sonuc-yorum').innerHTML=empty('ANALİZ YOK','// Veri girin');
+    document.getElementById('rapor-content').innerHTML=empty('RAPOR YOK','// En az 3 ölçüm gerekli');
+    document.getElementById('rapor-actions').style.display='none'; return;
+  }
+  if(veriler.length<3){
+    document.getElementById('sonuc-yorum').innerHTML=empty('YETERSİZ VERİ','// Daha fazla ölçüm gerekli');
+    document.getElementById('rapor-content').innerHTML=empty('RAPOR YOK','// En az 3 ölçüm gerekli');
+    document.getElementById('rapor-actions').style.display='none'; return;
+  }
+
+  const yavas=veriler.filter(v=>v.tempo==='yavas');
+  const normal=veriler.filter(v=>v.tempo==='normal');
+  const hizli=veriler.filter(v=>v.tempo==='hizli');
+  const g=(arr,k)=>arr.length?(arr.reduce((s,v)=>s+v[k],0)/arr.length).toFixed(k==='hiz'?2:3):null;
+  const ortYH=g(yavas,'hiz'),ortNH=g(normal,'hiz'),ortHH=g(hizli,'hiz');
+  const ortYA=g(yavas,'adimUz'),ortNA=g(normal,'adimUz'),ortHA=g(hizli,'adimUz');
+
+  let yorum=`<div class="result-card">
+    <div class="result-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      BULGULAR
+    </div><div class="result-body">`;
+
+  if(ortYA && ortHA){
+    const fark=((parseFloat(ortHA)-parseFloat(ortYA))/parseFloat(ortYA)*100).toFixed(1);
+    const pozitif=parseFloat(fark)>0;
+    yorum+=`<p>Yürüyüş hızı arttıkça adım uzunluğunun da <span class="hl">${pozitif?'arttığı':'azaldığı'}</span> gözlemlendi.</p>`;
+    yorum+=`<p>🐢 Yavaş tempo → <span class="num-t">${ortYA} m</span> adım uzunluğu &nbsp;(Ort. hız: <span class="num-t">${ortYH} m/s</span>)</p>`;
+    if(ortNA) yorum+=`<p>🚶 Normal tempo → <span class="num-b">${ortNA} m</span> adım uzunluğu &nbsp;(Ort. hız: <span class="num-b">${ortNH} m/s</span>)</p>`;
+    yorum+=`<p>🏃 Hızlı tempo → <span class="num">${ortHA} m</span> adım uzunluğu &nbsp;(Ort. hız: <span class="num">${ortHH} m/s</span>)</p>`;
+    yorum+=`<p style="margin-top:12px;">Yavaş tempoya kıyasla hızlı tempoda adım uzunluğu <span class="num">%${Math.abs(fark)}</span> ${pozitif?'artmıştır':'azalmıştır'}.</p>`;
+    yorum+=`<p>Bu sonuç, hız ile adım uzunluğu arasında ${parseFloat(fark)>8?'<span class="hl">güçlü bir pozitif doğrusal ilişki</span>':'<span class="hl">pozitif bir ilişki</span>'} bulunduğunu göstermektedir. <span class="hl">Oran-orantı</span> ve <span class="hl">doğrusal ilişki</span> konularıyla doğrudan örtüşmektedir.</p>`;
+  } else {
+    yorum+=`<p>Her üç tempodan da veri ekleyerek tam karşılaştırma yapılabilir.</p>`;
+  }
+
+  yorum+=`</div></div>`;
+  document.getElementById('sonuc-yorum').innerHTML=yorum;
+
+  const ortH=(veriler.reduce((s,v)=>s+v.hiz,0)/veriler.length).toFixed(2);
+  const ortA=(veriler.reduce((s,v)=>s+v.adimUz,0)/veriler.length).toFixed(2);
+
+  let rapor=`<div class="result-card">
+    <div class="result-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      PROJE RAPORU
+    </div><div class="result-body">
+    <p style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.5px;margin-bottom:14px;">Adım Uzunluğu ve Hız Arasındaki İlişki · Araştırma · Matematik/STEAM</p>
+    <p><span class="hl">Toplam ölçüm:</span> <span class="num">${veriler.length}</span> &nbsp;·&nbsp; <span class="hl">Ort. hız:</span> <span class="num">${ortH} m/s</span> &nbsp;·&nbsp; <span class="hl">Ort. adım uz.:</span> <span class="num">${ortA} m</span></p>`;
+
+  if(ortYA||ortNA||ortHA){
+    rapor+=`<div class="result-table-mini">
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Tempo Bazında Özet</p>`;
+    if(ortYA) rapor+=`<p><span style="color:var(--teal);font-weight:700;">YAVAŞ</span> → Hız: <span class="num-t">${ortYH} m/s</span> | Adım: <span class="num-t">${ortYA} m</span> (n=${yavas.length})</p>`;
+    if(ortNA) rapor+=`<p><span style="color:var(--blue);font-weight:700;">NORMAL</span> → Hız: <span class="num-b">${ortNH} m/s</span> | Adım: <span class="num-b">${ortNA} m</span> (n=${normal.length})</p>`;
+    if(ortHA) rapor+=`<p><span style="color:var(--accent);font-weight:700;">HIZLI</span> → Hız: <span class="num">${ortHH} m/s</span> | Adım: <span class="num">${ortHA} m</span> (n=${hizli.length})</p>`;
+    rapor+=`</div>`;
+  }
+  rapor+=`<p style="margin-top:14px;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">// Otomatik oluşturuldu · ${new Date().toLocaleDateString('tr-TR')}</p>
+  </div></div>`;
+
+  document.getElementById('rapor-content').innerHTML=rapor;
+  document.getElementById('rapor-actions').style.display='flex';
+}
+
+/* ═══════════════════════════
+   İNDİR
+═══════════════════════════ */
+function excelIndir(){
+  if(!veriler.length){alert('Önce veri girin.');return;}
+  let csv='Sıra,Ad,Tempo,Mesafe (m),Süre (sn),Adım,Hız (m/s),Adım Uzunluğu (m)\n';
+  veriler.forEach((v,i)=>{
+    const t=v.tempo==='yavas'?'Yavaş':v.tempo==='normal'?'Normal':'Hızlı';
+    csv+=`${i+1},"${v.ad}",${t},${v.mesafe},${v.sure},${v.adim},${v.hiz},${v.adimUz}\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='adim_hiz_veriler.csv'; a.click();
+}
+
+function raporIndir(){
+  if(!veriler.length){alert('Önce veri girin.');return;}
+  const yavas=veriler.filter(v=>v.tempo==='yavas');
+  const normal=veriler.filter(v=>v.tempo==='normal');
+  const hizli=veriler.filter(v=>v.tempo==='hizli');
+  const g=(arr,k)=>arr.length?(arr.reduce((s,v)=>s+v[k],0)/arr.length).toFixed(k==='hiz'?2:3):'—';
+  let txt='TÜBİTAK BİLİM FUARLARI DESTEKLEME PROGRAMI\n'+'═'.repeat(46)+'\n\n';
+  txt+=`PROJE: Adım Uzunluğu ve Hız Arasındaki İlişki\nTÜR: Araştırma | ALAN: Matematik / STEAM\n\n`;
+  txt+=`ÖZET\n${'─'.repeat(30)}\nToplam: ${veriler.length} | Ort. hız: ${(veriler.reduce((s,v)=>s+v.hiz,0)/veriler.length).toFixed(2)} m/s | Ort. adım: ${(veriler.reduce((s,v)=>s+v.adimUz,0)/veriler.length).toFixed(3)} m\n\n`;
+  txt+=`TEMPO KARŞILAŞTIRMASI\n${'─'.repeat(30)}\nYavaş  → ${g(yavas,'hiz')} m/s | ${g(yavas,'adimUz')} m (n=${yavas.length})\nNormal → ${g(normal,'hiz')} m/s | ${g(normal,'adimUz')} m (n=${normal.length})\nHızlı  → ${g(hizli,'hiz')} m/s | ${g(hizli,'adimUz')} m (n=${hizli.length})\n\nHAM VERİ\n${'─'.repeat(30)}\n`;
+  veriler.forEach((v,i)=>{
+    const t=v.tempo==='yavas'?'Yavaş':v.tempo==='normal'?'Normal':'Hızlı';
+    txt+=`${String(i+1).padStart(2,'0')}. ${v.ad.padEnd(18)} ${t.padEnd(8)} ${v.mesafe}m / ${v.sure}s / ${v.adim} adım → ${v.hiz} m/s | ${v.adimUz} m\n`;
+  });
+  txt+=`\n${'═'.repeat(46)}\nOluşturulma: ${new Date().toLocaleDateString('tr-TR')}\n`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8;'}));
+  a.download='adim_hiz_rapor.txt'; a.click();
+}
+</script>
+</body>
+</html>
