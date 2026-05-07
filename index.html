@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Adım & Hız — TÜBİTAK Bilim Fuarı</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0d0d0d;--paper:#f5f2ec;--paper2:#eae6de;--paper3:#ddd8ce;
+  --accent:#c8371a;--accent2:#e85d04;--teal:#006d5b;--teal2:#00a882;
+  --blue:#1a3a6b;--muted:#7a7060;--border:#c8bfaa;--r:6px;--rl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+
+/* INTRO */
+#intro{position:fixed;inset:0;z-index:9999;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+#intro.exit{animation:introExit 0.6s ease forwards;}
+@keyframes introExit{to{opacity:0;transform:translateY(-18px);pointer-events:none;}}
+.intro-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:28px;animation:fadeUp 0.7s ease 0.3s both;}
+.intro-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,11vw,100px);color:#fff;letter-spacing:5px;line-height:0.9;text-align:center;animation:fadeUp 0.7s ease 0.5s both;}
+.intro-title span{color:var(--accent2);}
+.walk-track{position:relative;width:100%;height:120px;margin-top:36px;overflow:hidden;}
+.walk-line{position:absolute;bottom:26px;left:0;right:0;height:1px;background:rgba(255,255,255,0.1);}
+.walker{position:absolute;bottom:26px;animation:walkAcross linear infinite;}
+@keyframes walkAcross{from{transform:translateX(-120px);}to{transform:translateX(calc(100vw + 120px));}}
+.walker svg .leg1{animation:ls1 0.5s ease-in-out infinite alternate;}
+.walker svg .leg2{animation:ls2 0.5s ease-in-out infinite alternate;}
+.walker svg .arm1{animation:as1 0.5s ease-in-out infinite alternate;}
+.walker svg .arm2{animation:as2 0.5s ease-in-out infinite alternate;}
+@keyframes ls1{from{transform:rotate(-22deg);transform-origin:50% 0%;}to{transform:rotate(22deg);transform-origin:50% 0%;}}
+@keyframes ls2{from{transform:rotate(22deg);transform-origin:50% 0%;}to{transform:rotate(-22deg);transform-origin:50% 0%;}}
+@keyframes as1{from{transform:rotate(-28deg);transform-origin:50% 0%;}to{transform:rotate(28deg);transform-origin:50% 0%;}}
+@keyframes as2{from{transform:rotate(28deg);transform-origin:50% 0%;}to{transform:rotate(-28deg);transform-origin:50% 0%;}}
+.walker-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;white-space:nowrap;padding:2px 7px;border-radius:99px;}
+.intro-progress{margin-top:32px;width:180px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;overflow:hidden;animation:fadeUp 0.6s ease 1s both;}
+.intro-progress-bar{height:100%;background:var(--accent2);animation:progFill 2.4s ease forwards;}
+@keyframes progFill{from{width:0%;}to{width:100%;}}
+.intro-skip{position:absolute;bottom:20px;right:20px;font-size:11px;color:rgba(255,255,255,0.45);font-family:'IBM Plex Mono',monospace;cursor:pointer;letter-spacing:1px;padding:9px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:4px;background:rgba(255,255,255,0.05);z-index:10;transition:all 0.2s;}
+.intro-skip:hover{color:#fff;background:rgba(255,255,255,0.1);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* MAIN */
+#main{opacity:0;transition:opacity 0.5s ease;}
+#main.visible{opacity:1;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:var(--ink);display:flex;align-items:center;padding:0 24px;height:52px;border-bottom:1px solid rgba(255,255,255,0.06);gap:8px;}
+.tb-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tb-pill{background:var(--accent);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;letter-spacing:2px;padding:3px 9px;border-radius:3px;text-transform:uppercase;}
+.tb-title{font-family:'Bebas Neue',sans-serif;font-size:19px;color:#fff;letter-spacing:3px;cursor:default;user-select:none;}
+.tb-nav{display:flex;gap:3px;flex:1;justify-content:center;overflow-x:auto;scrollbar-width:none;}
+.tb-nav::-webkit-scrollbar{display:none;}
+.tnav{padding:6px 14px;border-radius:4px;border:none;background:transparent;color:rgba(255,255,255,0.4);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.tnav:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.06);}
+.tnav.active{background:rgba(255,255,255,0.1);color:#fff;}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tb-status{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.5px;}
+.replay-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:4px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.4);font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.replay-btn:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.admin-badge{display:none;align-items:center;gap:5px;background:rgba(200,55,26,0.15);border:1px solid rgba(200,55,26,0.3);border-radius:4px;padding:4px 9px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:1px;cursor:pointer;}
+.admin-badge.show{display:flex;}
+.admin-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 4px var(--accent);}
+
+/* HERO */
+.hero{background:var(--ink);padding:56px 28px 48px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:center;position:relative;z-index:1;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(200,55,26,0.35);border-radius:3px;padding:4px 12px;margin-bottom:18px;}
+.hero-tag span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,86px);color:#fff;letter-spacing:3px;line-height:0.92;margin-bottom:18px;}
+.hero h1 em{font-style:normal;color:var(--accent2);}
+.hero-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.75;font-family:'IBM Plex Mono',monospace;max-width:420px;}
+.hero-stats{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap;}
+.hstat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;text-align:center;min-width:90px;}
+.hstat-v{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;line-height:1;display:block;}
+.hstat-l{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase;margin-top:3px;display:block;}
+.hero-preview{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--rl);padding:14px 18px;}
+.hp-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.track-svg{width:100%;overflow:visible;}
+.walker-body{animation:walkerMove 4s linear infinite;}
+@keyframes walkerMove{0%{transform:translateX(28px);}100%{transform:translateX(300px);}}
+.leg-f{animation:legF 0.42s ease-in-out infinite alternate;transform-origin:0px 0px;}
+.leg-b{animation:legB 0.42s ease-in-out infinite alternate;transform-origin:0px 0px;}
+.arm-f{animation:armF 0.42s ease-in-out infinite alternate;transform-origin:0px 0px;}
+.arm-b{animation:armB 0.42s ease-in-out infinite alternate;transform-origin:0px 0px;}
+@keyframes legF{from{transform:rotate(-28deg);}to{transform:rotate(28deg);}}
+@keyframes legB{from{transform:rotate(28deg);}to{transform:rotate(-28deg);}}
+@keyframes armF{from{transform:rotate(-22deg);}to{transform:rotate(22deg);}}
+@keyframes armB{from{transform:rotate(22deg);}to{transform:rotate(-22deg);}}
+
+/* CONTENT */
+.content{max-width:1100px;margin:0 auto;padding:36px 28px;}
+.sec{display:none;}
+.sec.on{display:block;animation:secIn 0.28s ease;}
+@keyframes secIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.sec-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--ink);}
+.sec-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--paper3);letter-spacing:2px;line-height:1;}
+.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;}
+.sec-sub{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-left:auto;}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:14px;}
+.card-hdr{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-hdr::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+
+/* FORM */
+label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:7px;}
+input[type=text],input[type=number],select{width:100%;padding:11px 14px;background:var(--paper);border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-family:'Space Grotesk',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s,box-shadow 0.2s;appearance:none;-webkit-appearance:none;}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,55,26,0.08);background:#fff;}
+input::placeholder{color:var(--border);font-size:13px;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7060' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer;}
+.fg{margin-bottom:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.formula-box{display:grid;grid-template-columns:1fr 1px 1fr;gap:22px;padding:14px 20px;background:var(--paper);border:1px solid var(--border);border-radius:var(--r);margin-top:12px;align-items:center;}
+.fdiv{background:var(--border);height:36px;}
+.fname{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.feq{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);}
+.feq .fv{color:var(--accent);font-weight:500;}.feq .fo{color:var(--muted);}
+
+/* BUTTONS */
+.brow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px;}
+.btn{padding:10px 20px;border-radius:var(--r);border:1.5px solid var(--border);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--ink);transition:all 0.15s;display:inline-flex;align-items:center;gap:7px;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.btn:active{transform:translateY(0);}
+.btn-ink{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn-ink:hover{background:#222;}
+.btn-red{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-red:hover{background:#a82c14;}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn-teal:hover{background:#005848;}
+.btn-gold{background:#b8860b;color:#fff;border-color:#b8860b;}
+.rapor-btn{background:var(--ink);color:#fff;border:none;border-radius:var(--r);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;padding:11px 22px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background 0.15s;}
+.rapor-btn:hover{background:#222;}
+.msg-ok{font-size:12px;font-weight:600;color:var(--teal);background:rgba(0,109,91,0.08);border:1px solid rgba(0,109,91,0.2);padding:6px 13px;border-radius:var(--r);font-family:'IBM Plex Mono',monospace;display:none;}
+.msg-err{font-size:12px;font-weight:600;color:var(--accent);background:rgba(200,55,26,0.07);border:1px solid rgba(200,55,26,0.2);padding:6px 13px;border-radius:var(--r);font-family:'IBM Plex Mono',monospace;display:none;}
+.msg-ok.show,.msg-err.show{display:block;}
+
+/* TABLE */
+.tbl-outer{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+thead{background:var(--ink);}
+th{padding:11px 13px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+td{padding:11px 13px;border-bottom:1px solid var(--paper2);color:var(--ink);transition:background 0.1s;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--paper);}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:3px;font-size:10px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+.by{background:rgba(0,109,91,0.1);color:var(--teal);}
+.bn{background:rgba(26,58,107,0.1);color:var(--blue);}
+.bh{background:rgba(200,55,26,0.1);color:var(--accent);}
+.mc{font-family:'IBM Plex Mono',monospace;font-size:12px;}
+.mc-r{color:var(--accent);font-weight:500;}
+.mc-t{color:var(--teal);font-weight:500;}
+.del{background:none;border:none;color:var(--border);cursor:pointer;padding:3px 7px;border-radius:4px;font-size:13px;transition:all 0.12s;}
+.del:hover{background:rgba(200,55,26,0.1);color:var(--accent);}
+
+/* CHARTS */
+.chart-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:22px;margin-bottom:14px;}
+.chart-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.chart-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--ink);}
+.chart-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:500;}
+.ldot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+
+/* METRICS */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.metric{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px 16px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+.metric:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.07);}
+.metric-top{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;}
+.metric-val{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--ink);line-height:1;}
+.metric-unit{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;}
+.metric-bar{height:3px;position:absolute;bottom:0;left:0;right:0;}
+
+/* RESULT */
+.result-card{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:26px;margin-bottom:14px;}
+.result-hdr{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--ink);margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:10px;}
+.result-body{font-size:14px;line-height:1.85;color:var(--ink);}
+.result-body p{margin-bottom:10px;}
+.hl{font-weight:700;}.num{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-weight:500;}
+.num-t{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-weight:500;}
+.num-b{font-family:'IBM Plex Mono',monospace;color:var(--blue);font-weight:500;}
+.result-mini{margin-top:14px;padding-top:14px;border-top:1px solid var(--paper2);}
+.result-mini-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+
+/* ADMIN PANEL */
+.admin-section{background:rgba(200,55,26,0.04);border:1.5px dashed rgba(200,55,26,0.25);border-radius:var(--rl);padding:20px;margin-bottom:14px;}
+.admin-section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:4px;}
+.admin-section-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:16px;}
+
+/* EMPTY */
+.empty{text-align:center;padding:44px 20px;color:var(--muted);}
+.empty-big{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;color:var(--paper3);margin-bottom:7px;}
+.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;}
+.divider{border:none;border-top:1px solid var(--border);margin:22px 0;}
+
+/* MODALS */
+.modal-ov{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:mFade 0.2s ease;}
+.modal-ov.hidden{display:none;}
+@keyframes mFade{from{opacity:0;}to{opacity:1;}}
+.modal-box{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:var(--rl);padding:36px 30px;width:100%;max-width:360px;position:relative;animation:mUp 0.22s ease;}
+@keyframes mUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.m-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:#fff;margin-bottom:4px;}
+.m-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.28);letter-spacing:1px;margin-bottom:22px;}
+.m-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:7px;}
+.m-input{width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);font-size:15px;font-family:'Space Grotesk',sans-serif;color:#fff;outline:none;margin-bottom:14px;transition:border-color 0.2s;}
+.m-input:focus{border-color:var(--accent);}
+.m-input::placeholder{color:rgba(255,255,255,0.18);}
+.m-err{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:10px;display:none;}
+.m-err.show{display:block;}
+.m-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:background 0.15s;}
+.m-btn:hover{background:#a82c14;}
+.m-close{position:absolute;top:14px;right:14px;background:none;border:none;color:rgba(255,255,255,0.25);font-size:18px;cursor:pointer;padding:4px 7px;line-height:1;border-radius:4px;transition:all 0.15s;}
+.m-close:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.m-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.18);letter-spacing:0.5px;margin-top:12px;line-height:1.6;text-align:center;}
+
+/* PRINT OVERLAY */
+#print-overlay{display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+#print-overlay.show{display:flex;}
+.print-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+.print-toolbar button{padding:9px 20px;border-radius:6px;border:none;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+.pb-print{background:#fff;color:#000;}
+.pb-close{background:rgba(255,255,255,0.12);color:#fff;}
+#print-frame{width:min(860px,95vw);height:80vh;border:none;border-radius:8px;background:#fff;}
+
+/* CHART PRINT OVERLAY */
+#chart-print-overlay{display:none;position:fixed;inset:0;z-index:9500;background:#fff;flex-direction:column;}
+#chart-print-overlay.show{display:flex;}
+.cpo-toolbar{background:var(--ink);padding:14px 24px;display:flex;gap:10px;align-items:center;flex-shrink:0;}
+.cpo-content{flex:1;overflow-y:auto;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.cpo-chart-box{border:1px solid var(--border);border-radius:var(--rl);padding:20px;}
+.cpo-chart-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ink);margin-bottom:14px;}
+@media print{
+  #chart-print-overlay .cpo-toolbar{display:none!important;}
+  #chart-print-overlay .cpo-content{grid-template-columns:1fr;padding:20px;}
+}
+
+/* FOOTER */
+.site-footer{background:var(--ink);color:rgba(255,255,255,0.2);text-align:center;padding:22px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:44px;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--paper);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .topbar{padding:0 14px;height:auto;flex-wrap:wrap;}
+  .tb-brand{padding:10px 0;flex:1;}
+  .tb-title{font-size:15px;}.tb-pill{font-size:8px;padding:2px 7px;}
+  .tb-nav{width:100%;padding:5px 0 7px;justify-content:flex-start;}
+  .tnav{font-size:11px;padding:6px 11px;}
+  .tb-status{display:none;}.replay-btn{font-size:9px;padding:4px 8px;}
+  .hero{padding:28px 16px 24px;}.hero-inner{grid-template-columns:1fr;}
+  .hero-preview{display:none;}.hero h1{font-size:clamp(36px,11vw,54px);}
+  .hero-stats{gap:8px;}.hstat{padding:8px 12px;min-width:76px;}.hstat-v{font-size:22px;}
+  .content{padding:22px 16px;}
+  .sec-hdr{flex-wrap:wrap;margin-bottom:16px;}.sec-num{font-size:32px;}.sec-ttl{font-size:22px;}.sec-sub{display:none;}
+  .card{padding:16px;}.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}
+  .formula-box{grid-template-columns:1fr;gap:12px;}.fdiv{display:none;}
+  .metrics-row{grid-template-columns:1fr 1fr;gap:8px;}.metric-val{font-size:28px;}
+  .chart-wrap{padding:16px;}.result-card{padding:18px 16px;}
+  .walk-track{height:110px;}.intro-title{font-size:clamp(44px,13vw,72px);}
+  .brow{gap:8px;}.btn{padding:9px 15px;font-size:12px;}
+  .cpo-content{grid-template-columns:1fr!important;}
+}
+@media(max-width:400px){
+  .g3{grid-template-columns:1fr;}.hero h1{font-size:36px;}
+  .tnav{font-size:10px;padding:5px 9px;}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="intro-label">TÜBİTAK · Bilim Fuarları · Araştırma Projesi</div>
+  <div class="intro-title">ADIM<br>& <span>HIZ</span></div>
+  <div class="walk-track">
+    <div class="walk-line"></div>
+    <div class="walker" style="animation-duration:9s;animation-delay:0s;">
+      <div class="walker-label" style="background:rgba(0,168,130,0.2);color:#00a882;">YAVAŞ · 0.8 m/s</div>
+      <svg width="34" height="58" viewBox="0 0 36 60"><circle cx="18" cy="8" r="6" fill="none" stroke="#00a882" stroke-width="2"/><line x1="18" y1="14" x2="18" y2="36" stroke="#00a882" stroke-width="2"/><g class="arm1"><line x1="18" y1="20" x2="6" y2="30" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g><g class="arm2"><line x1="18" y1="20" x2="30" y2="30" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g><g class="leg1"><line x1="18" y1="36" x2="8" y2="52" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g><g class="leg2"><line x1="18" y1="36" x2="28" y2="52" stroke="#00a882" stroke-width="2" stroke-linecap="round"/></g></svg>
+    </div>
+    <div class="walker" style="animation-duration:10.5s;animation-delay:-4s;">
+      <div class="walker-label" style="background:rgba(0,168,130,0.15);color:#00a882;">YAVAŞ · 0.7 m/s</div>
+      <svg width="30" height="52" viewBox="0 0 36 60"><circle cx="18" cy="8" r="6" fill="none" stroke="#00a882" stroke-width="1.8" opacity="0.65"/><line x1="18" y1="14" x2="18" y2="36" stroke="#00a882" stroke-width="1.8" opacity="0.65"/><g class="arm1"><line x1="18" y1="20" x2="6" y2="30" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/></g><g class="arm2"><line x1="18" y1="20" x2="30" y2="30" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/></g><g class="leg1"><line x1="18" y1="36" x2="8" y2="52" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/></g><g class="leg2"><line x1="18" y1="36" x2="28" y2="52" stroke="#00a882" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/></g></svg>
+    </div>
+    <div class="walker" style="animation-duration:6s;animation-delay:-2s;">
+      <div class="walker-label" style="background:rgba(107,155,223,0.25);color:#6b9bdf;">NORMAL · 1.4 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60"><circle cx="18" cy="8" r="6" fill="none" stroke="#6b9bdf" stroke-width="2"/><line x1="18" y1="14" x2="18" y2="36" stroke="#6b9bdf" stroke-width="2"/><g class="arm1"><line x1="18" y1="20" x2="5" y2="28" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g><g class="arm2"><line x1="18" y1="20" x2="31" y2="28" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g><g class="leg1"><line x1="18" y1="36" x2="6" y2="54" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g><g class="leg2"><line x1="18" y1="36" x2="30" y2="54" stroke="#6b9bdf" stroke-width="2" stroke-linecap="round"/></g></svg>
+    </div>
+    <div class="walker" style="animation-duration:3.5s;animation-delay:-1s;">
+      <div class="walker-label" style="background:rgba(200,55,26,0.18);color:#e85d04;">HIZLI · 2.2 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60"><circle cx="18" cy="8" r="6" fill="none" stroke="#e85d04" stroke-width="2.5"/><line x1="18" y1="14" x2="18" y2="36" stroke="#e85d04" stroke-width="2.5"/><g class="arm1"><line x1="18" y1="19" x2="3" y2="26" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g><g class="arm2"><line x1="18" y1="19" x2="33" y2="26" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g><g class="leg1"><line x1="18" y1="36" x2="4" y2="55" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g><g class="leg2"><line x1="18" y1="36" x2="32" y2="55" stroke="#e85d04" stroke-width="2.5" stroke-linecap="round"/></g></svg>
+    </div>
+    <div class="walker" style="animation-duration:2.8s;animation-delay:-0.5s;">
+      <div class="walker-label" style="background:rgba(200,55,26,0.13);color:#c8371a;font-weight:700;">KOŞU · 3.0 m/s</div>
+      <svg width="36" height="60" viewBox="0 0 36 60"><circle cx="18" cy="8" r="6" fill="none" stroke="#c8371a" stroke-width="3"/><line x1="18" y1="14" x2="18" y2="36" stroke="#c8371a" stroke-width="3"/><g class="arm1"><line x1="18" y1="18" x2="1" y2="23" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g><g class="arm2"><line x1="18" y1="18" x2="35" y2="23" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g><g class="leg1"><line x1="18" y1="36" x2="2" y2="56" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g><g class="leg2"><line x1="18" y1="36" x2="34" y2="56" stroke="#c8371a" stroke-width="3" stroke-linecap="round"/></g></svg>
+    </div>
+  </div>
+  <div class="intro-progress"><div class="intro-progress-bar"></div></div>
+  <div class="intro-skip" onclick="closeIntro()">ATLA →</div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-ov hidden" id="login-modal">
+  <div class="modal-box">
+    <button class="m-close" onclick="closeLogin()">✕</button>
+    <div class="m-title">ADMİN</div>
+    <div class="m-sub">// Yetkili giriş paneli</div>
+    <label class="m-label">Şifre</label>
+    <input class="m-input" type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="m-err" id="login-err">Hatalı şifre.</div>
+    <button class="m-btn" onclick="doLogin()">GİRİŞ YAP</button>
+    <div class="m-hint">// İlk girişte şifre: admin123</div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-ov hidden" id="chpass-modal">
+  <div class="modal-box">
+    <button class="m-close" onclick="document.getElementById('chpass-modal').classList.add('hidden')">✕</button>
+    <div class="m-title">ŞİFRE DEĞİŞTİR</div>
+    <div class="m-sub">// Yeni admin şifresi</div>
+    <label class="m-label">Yeni Şifre</label>
+    <input class="m-input" type="password" id="new-pass1" placeholder="Yeni şifre"/>
+    <label class="m-label">Tekrar</label>
+    <input class="m-input" type="password" id="new-pass2" placeholder="Tekrar girin" onkeydown="if(event.key==='Enter')changePass()"/>
+    <div class="m-err" id="chpass-err"></div>
+    <button class="m-btn" onclick="changePass()">KAYDET</button>
+  </div>
+</div>
+
+<!-- PRINT OVERLAY (Rapor) -->
+<div id="print-overlay">
+  <div class="print-toolbar">
+    <button class="pb-print" onclick="document.getElementById('print-frame').contentWindow.print()">🖨️ Yazdır / PDF Kaydet</button>
+    <button class="pb-close" onclick="document.getElementById('print-overlay').classList.remove('show')">✕ Kapat</button>
+  </div>
+  <iframe id="print-frame"></iframe>
+</div>
+
+<!-- CHART PRINT OVERLAY (Tam sayfa grafikler) -->
+<div id="chart-print-overlay">
+  <div class="cpo-toolbar">
+    <button class="pb-print" onclick="window.print()">🖨️ Grafikleri Yazdır / PDF</button>
+    <button class="pb-close" onclick="document.getElementById('chart-print-overlay').classList.remove('show')">✕ Kapat</button>
+  </div>
+  <div class="cpo-content" id="cpo-content">
+    <!-- Grafikler JS ile buraya eklenir -->
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-pill">TÜBİTAK</div>
+      <div class="tb-title" id="tb-title-click">ADIM & HIZ</div>
+    </div>
+    <div class="tb-nav">
+      <button class="tnav active" onclick="st('sonuc')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>Sonuçlar
+      </button>
+      <button class="tnav" onclick="st('grafik')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grafik
+      </button>
+      <button class="tnav" onclick="st('tablo')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Veri
+      </button>
+      <button class="tnav" id="tab-giris" onclick="st('giris')" style="display:none;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Veri Gir
+      </button>
+    </div>
+    <div class="tb-right">
+      <span class="tb-status" id="status-txt">—</span>
+      <div class="admin-badge" id="admin-badge" onclick="adminLogout()" title="Oturumu kapat">
+        <div class="admin-dot"></div>ADMİN ✕
+      </div>
+      <button class="replay-btn" onclick="replayIntro()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>Tanıtım
+      </button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tag"><span>Araştırma · Matematik</span></div>
+        <h1>ADIM<br>UZUNLUĞU<br><em>&amp; HIZ</em></h1>
+        <p class="hero-desc">// Yürüyüş hızı arttıkça adım uzunluğu nasıl değişir?<br>Bilimsel ölçüm ve analiz.</p>
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-v" id="h-m1">0</span><span class="hstat-l">Ölçüm</span></div>
+          <div class="hstat"><span class="hstat-v" id="h-m2">—</span><span class="hstat-l">Ort. Hız</span></div>
+          <div class="hstat"><span class="hstat-v" id="h-m3">—</span><span class="hstat-l">Ort. Adım</span></div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- SONUÇLAR -->
+    <div class="sec on" id="sec-sonuc">
+      <div class="sec-hdr"><div class="sec-num">01</div><div class="sec-ttl">Bulgular & Sonuç</div><div class="sec-sub">// Analiz çıktısı</div></div>
+      <div class="metrics-row">
+        <div class="metric"><div class="metric-top">Toplam Ölçüm</div><div class="metric-val" id="sm1">0</div><div class="metric-unit">adet</div><div class="metric-bar" style="background:var(--ink);"></div></div>
+        <div class="metric"><div class="metric-top">Ort. Hız</div><div class="metric-val" id="sm2">—</div><div class="metric-unit">m/s</div><div class="metric-bar" style="background:var(--accent);"></div></div>
+        <div class="metric"><div class="metric-top">Ort. Adım Uzunluğu</div><div class="metric-val" id="sm3">—</div><div class="metric-unit">metre</div><div class="metric-bar" style="background:var(--teal);"></div></div>
+        <div class="metric"><div class="metric-top">Hız:Adım Oranı</div><div class="metric-val" id="sm4">—</div><div class="metric-unit">oran</div><div class="metric-bar" style="background:#b8860b;"></div></div>
+      </div>
+      <div id="sonuc-yorum"><div class="empty"><div class="empty-big">VERİ BEKLENİYOR</div><div class="empty-sub">// Ölçümler girilince sonuçlar burada görünür</div></div></div>
+      <hr class="divider"/>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:12px;">PROJE RAPORU</div>
+      <div id="rapor-content"><div class="empty"><div class="empty-big">—</div><div class="empty-sub">// En az 3 ölçüm gerekli</div></div></div>
+      <!-- Admin indirme butonları -->
+      <div class="brow" id="rapor-actions" style="display:none;margin-top:14px;">
+        <button class="rapor-btn" onclick="raporGoster()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          RAPORU YAZDIR / PDF
+        </button>
+        <button class="btn btn-gold" onclick="dosyaOlarakKaydet()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Verilerle Kaydet
+        </button>
+      </div>
+      <div id="rapor-locked" style="display:none;margin-top:14px;"></div>
+    </div>
+
+    <!-- GRAFİK -->
+    <div class="sec" id="sec-grafik">
+      <div class="sec-hdr"><div class="sec-num">02</div><div class="sec-ttl">Grafik Analizi</div><div class="sec-sub">// Görsel veri temsili</div></div>
+      <div class="chart-wrap">
+        <div class="chart-top">
+          <div><div class="chart-name">HIZ — ADIM UZUNLUĞU</div><div class="chart-sub">// Scatter diyagramı</div></div>
+          <div class="legend">
+            <div class="li"><div class="ldot" style="background:var(--teal);"></div>Yavaş</div>
+            <div class="li"><div class="ldot" style="background:var(--blue);"></div>Normal</div>
+            <div class="li"><div class="ldot" style="background:var(--accent);"></div>Hızlı</div>
+          </div>
+        </div>
+        <div style="position:relative;width:100%;height:280px;"><canvas id="chart-scatter"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-top"><div><div class="chart-name">TEMPO KARŞILAŞTIRMASI</div><div class="chart-sub">// Ortalama adım uzunlukları</div></div></div>
+        <div style="position:relative;width:100%;height:200px;"><canvas id="chart-bar"></canvas></div>
+      </div>
+      <div id="grafik-bos" class="empty" style="display:none;"><div class="empty-big">GRAFİK YOK</div><div class="empty-sub">// En az 2 ölçüm gerekli</div></div>
+      <div class="brow" id="grafik-actions" style="display:none;margin-top:8px;">
+        <button class="rapor-btn" onclick="grafikPDFIndir()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          GRAFİKLERİ PDF OLARAK İNDİR
+        </button>
+      </div>
+    </div>
+
+    <!-- TABLO -->
+    <div class="sec" id="sec-tablo">
+      <div class="sec-hdr"><div class="sec-num">03</div><div class="sec-ttl">Ölçüm Verileri</div><div class="sec-sub">// Ham veri tablosu</div></div>
+      <div class="tbl-outer" id="tablo-wrap"><div class="empty"><div class="empty-big">VERİ YOK</div><div class="empty-sub">// Henüz ölçüm girilmedi</div></div></div>
+      <div class="brow" id="tablo-export" style="display:none;margin-top:14px;">
+        <button class="btn btn-teal" onclick="excelIndir()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel İndir
+        </button>
+        <button class="btn btn-red" id="del-all-btn" onclick="temizle()" style="display:none;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Tümünü Sil
+        </button>
+      </div>
+    </div>
+
+    <!-- VERİ GİR (admin) -->
+    <div class="sec" id="sec-giris">
+      <div class="sec-hdr"><div class="sec-num">——</div><div class="sec-ttl">Veri Girişi</div><div class="sec-sub">// Admin paneli</div></div>
+      <div class="card">
+        <div class="card-hdr">Yeni Ölçüm</div>
+        <div class="fg"><label>Öğrenci Adı</label><input type="text" id="ad" placeholder="ör. Ahmet Kaya"/></div>
+        <div class="g3">
+          <div class="fg"><label>Tempo</label>
+            <select id="tempo"><option value="yavas">🐢 Yavaş</option><option value="normal">🚶 Normal</option><option value="hizli">🏃 Hızlı</option></select>
+          </div>
+          <div class="fg"><label>Mesafe (m)</label><input type="number" id="mesafe" value="20" min="1"/></div>
+          <div class="fg"><label>Süre (sn)</label><input type="number" id="sure" placeholder="ör. 18.5" step="0.1" min="0.1"/></div>
+        </div>
+        <div class="fg"><label>Adım Sayısı</label><input type="number" id="adim" placeholder="kaç adım?" min="1"/></div>
+        <div class="brow">
+          <button class="btn btn-ink" onclick="ekle()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Kaydet
+          </button>
+          <div class="msg-ok" id="msg-ok">✓ Kaydedildi!</div>
+          <div class="msg-err" id="msg-err">Tüm alanları doldurun.</div>
+        </div>
+      </div>
+      <div class="formula-box">
+        <div><div class="fname">Hız Hesabı</div><div class="feq"><span class="fv">v</span> <span class="fo">=</span> mesafe <span class="fo">÷</span> süre <span class="fo">[m/s]</span></div></div>
+        <div class="fdiv"></div>
+        <div><div class="fname">Adım Uzunluğu</div><div class="feq"><span class="fv">L</span> <span class="fo">=</span> mesafe <span class="fo">÷</span> adım_sayısı <span class="fo">[m]</span></div></div>
+      </div>
+      <hr class="divider"/>
+      <!-- Admin araçları -->
+      <div class="admin-section">
+        <div class="admin-section-title">ADMİN ARAÇLARI</div>
+        <div class="admin-section-sub">// Veri yönetimi ve dışa aktarım</div>
+        <div class="brow" style="margin-top:0;">
+          <button class="btn btn-gold" onclick="dosyaOlarakKaydet()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Verilerle Birlikte Kaydet
+          </button>
+          <button class="btn" onclick="document.getElementById('chpass-modal').classList.remove('hidden')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Şifre Değiştir
+          </button>
+          <button class="btn btn-red" onclick="temizle()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            Tüm Veriyi Sil
+          </button>
+        </div>
+        <div style="margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);line-height:1.7;">
+          // <strong>Verilerle Birlikte Kaydet</strong> → Tüm veriler şifrelenip HTML içine gömülür.<br>
+          // O dosyayı GitHub'a yükleyin → herkes sonuçları görür, kimse ham veriyi okuyamaz.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="site-footer">TÜBİTAK Bilim Fuarları Destekleme Programı &nbsp;·&nbsp; Adım Uzunluğu & Hız İlişkisi &nbsp;·&nbsp; Araştırma Projesi</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ══ INTRO ══ */
+let introSkipped=false;
+function closeIntro(){
+  introSkipped=true;
+  const i=document.getElementById('intro');
+  i.classList.add('exit');
+  setTimeout(()=>{ i.style.display='none'; document.getElementById('main').classList.add('visible'); },620);
+}
+function replayIntro(){
+  const i=document.getElementById('intro');
+  introSkipped=false; i.style.display='flex'; i.classList.remove('exit');
+  i.style.opacity='0'; void i.offsetWidth;
+  i.style.transition='opacity 0.4s ease'; i.style.opacity='1';
+  const bar=i.querySelector('.intro-progress-bar');
+  bar.style.animation='none'; void bar.offsetWidth; bar.style.animation='progFill 2.4s ease forwards';
+}
+setTimeout(()=>{ if(!introSkipped) closeIntro(); },3200);
+
+/* ══ STORAGE & VERI ══ */
+const SK='tubitak_adim_v5';
+const PASS_KEY='tubitak_admin_pass_v5';
+
+// Veri şifreleme (base64 + karıştırma — ham kod okumayı engeller)
+function encodeData(arr){ return btoa(unescape(encodeURIComponent(JSON.stringify(arr)))); }
+function decodeData(str){ try{ return JSON.parse(decodeURIComponent(escape(atob(str)))); }catch(e){ return []; } }
+
+let veriler=[];
+/* __EMBED_START__ */
+// localStorage'dan yükle (encoded veya düz)
+try{
+  const raw=localStorage.getItem(SK);
+  if(raw){
+    try{ veriler=decodeData(raw); }
+    catch(e){ veriler=JSON.parse(raw)||[]; }
+  }
+}catch(e){ veriler=[]; }
+
+let chartS=null, chartB=null, isAdmin=false, currentSec='sonuc';
+
+/* ── İsim maskeleme ── */
+function maskeName(ad){
+  if(!ad) return '—';
+  const parts=ad.trim().split(' ');
+  return parts.map(p=> p.length>0 ? p[0].toUpperCase()+'...' : '').join(' ');
+}
+
+function gorunecekAd(ad){ return isAdmin ? ad : maskeName(ad); }
+
+/* ── kaydet ── */
+function kaydet(){
+  try{ localStorage.setItem(SK, encodeData(veriler)); }catch(e){}
+  document.getElementById('status-txt').textContent=veriler.length+' kayıt';
+  updateStats();
+}
+
+function updateStats(){
+  const n=veriler.length;
+  ['h-m1','sm1'].forEach(id=>document.getElementById(id).textContent=n);
+  if(!n){ ['h-m2','h-m3','sm2','sm3','sm4'].forEach(id=>document.getElementById(id).textContent='—'); return; }
+  const ortH=(veriler.reduce((s,v)=>s+v.hiz,0)/n).toFixed(2);
+  const ortA=(veriler.reduce((s,v)=>s+v.adimUz,0)/n).toFixed(2);
+  const oran=(ortH/ortA).toFixed(2);
+  ['h-m2','sm2'].forEach(id=>document.getElementById(id).textContent=ortH);
+  ['h-m3','sm3'].forEach(id=>document.getElementById(id).textContent=ortA);
+  document.getElementById('sm4').textContent=oran+':1';
+}
+
+window.addEventListener('load',()=>{
+  document.getElementById('status-txt').textContent=veriler.length+' kayıt';
+  updateStats(); renderTablo(); renderSonuc();
+});
+
+/* ══ ADMIN ══ */
+let secretClicks=0, secretTimer=null;
+document.getElementById('tb-title-click').addEventListener('click',()=>{
+  secretClicks++;
+  clearTimeout(secretTimer);
+  secretTimer=setTimeout(()=>{ secretClicks=0; },1500);
+  if(secretClicks>=5){ secretClicks=0; openLogin(); }
+});
+
+function getAdminPass(){ return localStorage.getItem(PASS_KEY)||'admin123'; }
+function openLogin(){
+  document.getElementById('login-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('login-pass').focus(),100);
+}
+function closeLogin(){
+  document.getElementById('login-modal').classList.add('hidden');
+  document.getElementById('login-err').classList.remove('show');
+  document.getElementById('login-pass').value='';
+}
+function doLogin(){
+  const pass=document.getElementById('login-pass').value;
+  if(pass===getAdminPass()){
+    isAdmin=true; closeLogin();
+    document.getElementById('admin-badge').classList.add('show');
+    document.getElementById('tab-giris').style.display='';
+    document.getElementById('del-all-btn').style.display='';
+    updateAdminUI(); renderTablo(); renderSonuc();
+    if(currentSec==='sonuc') renderSonuc();
+  } else { document.getElementById('login-err').classList.add('show'); }
+}
+function adminLogout(){
+  if(!confirm('Admin oturumunu kapat?')) return;
+  isAdmin=false;
+  document.getElementById('admin-badge').classList.remove('show');
+  document.getElementById('tab-giris').style.display='none';
+  document.getElementById('del-all-btn').style.display='none';
+  if(['giris'].includes(currentSec)) st('sonuc');
+  updateAdminUI(); renderTablo(); renderSonuc();
+}
+function updateAdminUI(){
+  // Rapor butonları
+  const act=document.getElementById('rapor-actions');
+  const locked=document.getElementById('rapor-locked');
+  const grafAct=document.getElementById('grafik-actions');
+  const tabExp=document.getElementById('tablo-export');
+  if(veriler.length>=3){
+    if(isAdmin){ act.style.display='flex'; if(locked) locked.style.display='none'; }
+    else { act.style.display='none'; if(locked) locked.style.display='block'; }
+  }
+  if(grafAct) grafAct.style.display = (veriler.length>=2 && isAdmin) ? 'flex' : 'none';
+  if(tabExp) tabExp.style.display = (veriler.length>0 && isAdmin) ? 'flex' : 'none';
+}
+function changePass(){
+  const p1=document.getElementById('new-pass1').value;
+  const p2=document.getElementById('new-pass2').value;
+  const err=document.getElementById('chpass-err');
+  if(!p1||p1.length<4){err.textContent='En az 4 karakter.';err.classList.add('show');return;}
+  if(p1!==p2){err.textContent='Şifreler eşleşmiyor.';err.classList.add('show');return;}
+  localStorage.setItem(PASS_KEY,p1);
+  document.getElementById('chpass-modal').classList.add('hidden');
+  document.getElementById('new-pass1').value=''; document.getElementById('new-pass2').value='';
+  err.classList.remove('show'); alert('✓ Şifre değiştirildi!');
+}
+
+/* ══ TABS ══ */
+function st(t){
+  if(t==='giris'&&!isAdmin){ openLogin(); return; }
+  currentSec=t;
+  document.querySelectorAll('.tnav').forEach(el=>{
+    el.classList.toggle('active',el.getAttribute('onclick')&&el.getAttribute('onclick').includes("'"+t+"'"));
+  });
+  ['sonuc','grafik','tablo','giris'].forEach(s=>{
+    document.getElementById('sec-'+s).classList.toggle('on',s===t);
+  });
+  if(t==='tablo') renderTablo();
+  if(t==='grafik'){ renderGrafik(); updateAdminUI(); }
+  if(t==='sonuc') renderSonuc();
+}
+
+/* ══ VERİ ══ */
+function ekle(){
+  const ad=document.getElementById('ad').value.trim()||'Öğrenci '+(veriler.length+1);
+  const tempo=document.getElementById('tempo').value;
+  const mesafe=parseFloat(document.getElementById('mesafe').value);
+  const sure=parseFloat(document.getElementById('sure').value);
+  const adim=parseInt(document.getElementById('adim').value);
+  const mok=document.getElementById('msg-ok'), merr=document.getElementById('msg-err');
+  if(!mesafe||!sure||!adim||sure<=0||adim<=0){
+    merr.classList.add('show'); mok.classList.remove('show');
+    setTimeout(()=>merr.classList.remove('show'),2500); return;
+  }
+  const hiz=+(mesafe/sure).toFixed(3);
+  const adimUz=+(mesafe/adim).toFixed(3);
+  veriler.push({ad,tempo,mesafe,sure,adim,hiz,adimUz});
+  kaydet();
+  mok.classList.add('show'); merr.classList.remove('show');
+  ['sure','adim','ad'].forEach(id=>document.getElementById(id).value='');
+  setTimeout(()=>mok.classList.remove('show'),2500);
+}
+
+/* ══ TABLO ══ */
+function renderTablo(){
+  const w=document.getElementById('tablo-wrap');
+  const exp=document.getElementById('tablo-export');
+  if(!veriler.length){
+    w.innerHTML='<div class="empty"><div class="empty-big">VERİ YOK</div><div class="empty-sub">// Henüz ölçüm girilmedi</div></div>';
+    if(exp) exp.style.display='none'; return;
+  }
+  if(exp) exp.style.display= isAdmin ? 'flex' : 'none';
+  const delCol=isAdmin?'<th></th>':'';
+  let h=`<table><thead><tr><th>#</th><th>Ad</th><th>Tempo</th><th>Mesafe</th><th>Süre</th><th>Adım</th><th>Hız m/s</th><th>Adım Uz. m</th>${delCol}</tr></thead><tbody>`;
+  veriler.forEach((v,i)=>{
+    const bc=v.tempo==='yavas'?'by':v.tempo==='normal'?'bn':'bh';
+    const bl=v.tempo==='yavas'?'🐢 YAVAŞ':v.tempo==='normal'?'🚶 NORMAL':'🏃 HIZLI';
+    const delCell=isAdmin?`<td><button class="del" onclick="sil(${i})">✕</button></td>`:'';
+    h+=`<tr>
+      <td class="mc" style="color:var(--muted);">${String(i+1).padStart(2,'0')}</td>
+      <td style="font-weight:600;">${gorunecekAd(v.ad)}</td>
+      <td><span class="badge ${bc}">${bl}</span></td>
+      <td class="mc">${v.mesafe} m</td><td class="mc">${v.sure} s</td><td class="mc">${v.adim}</td>
+      <td class="mc mc-r">${v.hiz}</td><td class="mc mc-t">${v.adimUz}</td>${delCell}
+    </tr>`;
+  });
+  h+='</tbody></table>';
+  w.innerHTML=h;
+}
+function sil(i){ if(!isAdmin)return; veriler.splice(i,1); kaydet(); renderTablo(); updateAdminUI(); }
+function temizle(){ if(!isAdmin)return; if(confirm('Tüm veriler silinsin mi?')){ veriler=[]; kaydet(); renderTablo(); renderSonuc(); updateAdminUI(); } }
+
+/* ══ GRAFİK ══ */
+Chart.defaults.color='#7a7060'; Chart.defaults.borderColor='rgba(0,0,0,0.06)';
+function renderGrafik(){
+  const bos=document.getElementById('grafik-bos');
+  if(veriler.length<2){ bos.style.display='block'; return; }
+  bos.style.display='none';
+  const colors={yavas:'#006d5b',normal:'#1a3a6b',hizli:'#c8371a'};
+  const ds=['yavas','normal','hizli'].map(t=>({
+    label:t==='yavas'?'Yavaş':t==='normal'?'Normal':'Hızlı',
+    data:veriler.filter(v=>v.tempo===t).map(v=>({x:v.hiz,y:v.adimUz})),
+    backgroundColor:colors[t]+'cc',borderColor:colors[t],pointRadius:9,pointHoverRadius:13,showLine:false
+  }));
+  if(chartS) chartS.destroy();
+  chartS=new Chart(document.getElementById('chart-scatter'),{
+    type:'scatter',data:{datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d0d0d',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,bodyColor:'#fff',padding:10,
+        callbacks:{label:d=>`  Hız: ${d.raw.x} m/s  |  Adım: ${d.raw.y} m`}}},
+      scales:{x:{title:{display:true,text:'Hız (m/s)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}},
+              y:{title:{display:true,text:'Adım Uzunluğu (m)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}}}}
+  });
+  const tempos=['yavas','normal','hizli'],labels=['Yavaş','Normal','Hızlı'],cols=['#006d5b','#1a3a6b','#c8371a'];
+  const bdata=tempos.map(t=>{const g=veriler.filter(v=>v.tempo===t);return g.length?+(g.reduce((s,v)=>s+v.adimUz,0)/g.length).toFixed(3):null;});
+  if(chartB) chartB.destroy();
+  chartB=new Chart(document.getElementById('chart-bar'),{
+    type:'bar',data:{labels,datasets:[{data:bdata,backgroundColor:cols.map(c=>c+'cc'),borderColor:cols,borderWidth:1.5,borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d0d0d',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,bodyColor:'#fff',padding:10,
+        callbacks:{label:d=>`  Ort. adım: ${d.raw} m`}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#7a7060'}},
+              y:{title:{display:true,text:'Ort. Adım Uzunluğu (m)',color:'#7a7060'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a7060'}}}}
+  });
+}
+
+/* ══ GRAFİK PDF İNDİR — Her grafik ayrı A4 sayfası (tek pencere) ══ */
+function grafikPDFIndir(){
+  if(!veriler.length){ alert('Veri yok.'); return; }
+
+  // ── Scatter SVG ──
+  const PAD={l:64,r:30,t:30,b:70},W=700,H=380;
+  const pw=W-PAD.l-PAD.r, ph=H-PAD.t-PAD.b;
+  const allH=veriler.map(v=>v.hiz), allA=veriler.map(v=>v.adimUz);
+  const minH=Math.min(...allH), maxH=Math.max(...allH);
+  const minA=Math.min(...allA), maxA=Math.max(...allA);
+  const rH=maxH-minH||1, rA=maxA-minA||1;
+  const px=h=>PAD.l+((h-minH)/rH)*pw;
+  const py=a=>PAD.t+ph-((a-minA)/rA)*ph;
+  const clr={yavas:'#006d5b',normal:'#1a3a6b',hizli:'#c8371a'};
+
+  let sg='',dots='';
+  for(let i=0;i<=5;i++){
+    const xv=(minH+rH*i/5).toFixed(2);
+    const yv=(minA+rA*(1-i/5)).toFixed(3);
+    sg+=`<line x1="${PAD.l+pw*i/5}" y1="${PAD.t}" x2="${PAD.l+pw*i/5}" y2="${PAD.t+ph}" stroke="#eae6de" stroke-width="1"/>`;
+    sg+=`<text x="${PAD.l+pw*i/5}" y="${PAD.t+ph+16}" text-anchor="middle" font-size="11" fill="#7a7060" font-family="monospace">${xv}</text>`;
+    sg+=`<line x1="${PAD.l}" y1="${PAD.t+ph*i/5}" x2="${PAD.l+pw}" y2="${PAD.t+ph*i/5}" stroke="#eae6de" stroke-width="1"/>`;
+    sg+=`<text x="${PAD.l-6}" y="${PAD.t+ph*i/5+4}" text-anchor="end" font-size="11" fill="#7a7060" font-family="monospace">${yv}</text>`;
+  }
+  sg+=`<line x1="${PAD.l}" y1="${PAD.t+ph}" x2="${PAD.l+pw}" y2="${PAD.t+ph}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  sg+=`<line x1="${PAD.l}" y1="${PAD.t}" x2="${PAD.l}" y2="${PAD.t+ph}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  // x ekseni etiketi
+  sg+=`<text x="${PAD.l+pw/2}" y="${PAD.t+ph+34}" text-anchor="middle" font-size="12" fill="#7a7060" font-family="monospace">Hız (m/s)</text>`;
+  // y ekseni etiketi
+  sg+=`<text x="14" y="${PAD.t+ph/2}" text-anchor="middle" font-size="12" fill="#7a7060" font-family="monospace" transform="rotate(-90,14,${PAD.t+ph/2})">Adım Uzunluğu (m)</text>`;
+  if(veriler.length>=2){ sg+=`<line x1="${px(minH+rH*0.05)}" y1="${py(minA+rA*0.05)}" x2="${px(minH+rH*0.95)}" y2="${py(minA+rA*0.95)}" stroke="#c8371a" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"/>`; }
+  // Legend — x ekseninin ALTINDA, ayrı satırda
+  let legend='';
+  ['yavas','normal','hizli'].forEach((t,ti)=>{
+    const lbl=t==='yavas'?'Yavaş':t==='normal'?'Normal':'Hızlı';
+    const lx=PAD.l+ti*140;
+    legend+=`<rect x="${lx}" y="${H-20}" width="12" height="12" rx="2" fill="${clr[t]}"/>`;
+    legend+=`<text x="${lx+17}" y="${H-10}" font-size="12" fill="#0d0d0d" font-family="monospace">${lbl}</text>`;
+    veriler.filter(v=>v.tempo===t).forEach(v=>{
+      dots+=`<circle cx="${px(v.hiz)}" cy="${py(v.adimUz)}" r="9" fill="${clr[t]}" opacity="0.85"/>`;
+      dots+=`<circle cx="${px(v.hiz)}" cy="${py(v.adimUz)}" r="3" fill="#fff"/>`;
+    });
+  });
+  const scatterSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%">${sg}${dots}${legend}</svg>`;
+
+  // ── Bar SVG ──
+  const BW=700,BH=360,BP={l:64,r:30,t:30,b:60};
+  const bTempos=['yavas','normal','hizli'],bLabels=['Yavaş','Normal','Hızlı'],bColors=['#006d5b','#1a3a6b','#c8371a'];
+  const gav=(arr,k)=>arr.length?(arr.reduce((s,v)=>s+v[k],0)/arr.length).toFixed(3):null;
+  const bVals=[gav(veriler.filter(v=>v.tempo==='yavas'),'adimUz'),gav(veriler.filter(v=>v.tempo==='normal'),'adimUz'),gav(veriler.filter(v=>v.tempo==='hizli'),'adimUz')].map(v=>v?parseFloat(v):0);
+  const bMax=Math.max(...bVals,0.1),bph2=BH-BP.t-BP.b;
+  const barW=110,barGap=(BW-BP.l-BP.r-3*barW)/4;
+  let bbg='',bbars='';
+  for(let i=0;i<=5;i++){
+    const y=BP.t+bph2*i/5;
+    bbg+=`<line x1="${BP.l}" y1="${y}" x2="${BW-BP.r}" y2="${y}" stroke="#eae6de" stroke-width="1"/>`;
+    bbg+=`<text x="${BP.l-6}" y="${y+4}" text-anchor="end" font-size="11" fill="#7a7060" font-family="monospace">${(bMax*(1-i/5)).toFixed(3)}</text>`;
+  }
+  bbg+=`<line x1="${BP.l}" y1="${BP.t}" x2="${BP.l}" y2="${BP.t+bph2}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  bbg+=`<line x1="${BP.l}" y1="${BP.t+bph2}" x2="${BW-BP.r}" y2="${BP.t+bph2}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  bbg+=`<text x="${BP.l+(BW-BP.l-BP.r)/2}" y="${BH-10}" text-anchor="middle" font-size="12" fill="#7a7060" font-family="monospace">Tempo</text>`;
+  bbg+=`<text x="14" y="${BP.t+bph2/2}" text-anchor="middle" font-size="12" fill="#7a7060" font-family="monospace" transform="rotate(-90,14,${BP.t+bph2/2})">Ort. Adım Uzunluğu (m)</text>`;
+  bTempos.forEach((t,i)=>{
+    const x=BP.l+barGap*(i+1)+barW*i,val=bVals[i],bh=(val/bMax)*bph2,by=BP.t+bph2-bh;
+    bbars+=`<rect x="${x}" y="${by}" width="${barW}" height="${bh}" rx="6" fill="${bColors[i]}" opacity="0.88"/>`;
+    if(val>0) bbars+=`<text x="${x+barW/2}" y="${by-8}" text-anchor="middle" font-size="13" fill="${bColors[i]}" font-family="monospace" font-weight="bold">${val.toFixed(3)} m</text>`;
+    bbars+=`<text x="${x+barW/2}" y="${BP.t+bph2+20}" text-anchor="middle" font-size="14" fill="#0d0d0d" font-family="monospace">${bLabels[i]}</text>`;
+  });
+  const barSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BW} ${BH}" width="100%">${bbg}${bbars}</svg>`;
+
+  // ── Tek pencerede 2 A4 sayfası ──
+  const fontLink=`<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>`;
+  const html=`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"/><title>Grafikler — TÜBİTAK</title>${fontLink}
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Mono',monospace;background:#fff;color:#0d0d0d;}
+.toolbar{position:fixed;top:0;left:0;right:0;background:#0d0d0d;padding:10px 20px;display:flex;gap:10px;z-index:999;}
+.toolbar button{padding:8px 18px;border-radius:5px;border:none;font-weight:600;cursor:pointer;font-size:13px;}
+.page{width:210mm;min-height:297mm;padding:18mm 18mm 12mm;display:flex;flex-direction:column;gap:16px;}
+.page-hdr{border-bottom:3px solid #0d0d0d;padding-bottom:12px;}
+.badge{background:#c8371a;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:5px;}
+.title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;}
+.cap{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#7a7060;text-align:center;margin-top:8px;}
+@media print{
+  .toolbar{display:none!important;}
+  .page{page-break-after:always;margin:0;padding:15mm 15mm 10mm;}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style></head><body>
+<div class="toolbar">
+  <button style="background:#fff;color:#000;" onclick="window.print()">🖨️ Yazdır / PDF Kaydet (2 sayfa)</button>
+  <button style="background:rgba(255,255,255,0.15);color:#fff;" onclick="window.close()">✕ Kapat</button>
+</div>
+<div style="padding-top:52px;">
+  <div class="page">
+    <div class="page-hdr">
+      <div class="badge">TÜBİTAK · Bilim Fuarları</div>
+      <div class="title">HIZ — ADIM UZUNLUĞU DAĞILIMI</div>
+    </div>
+    <div style="width:100%;">${scatterSVG}</div>
+    <div class="cap">// Şekil 1 — Hız ve Adım Uzunluğu Dağılım Grafiği (Scatter)</div>
+  </div>
+  <div class="page">
+    <div class="page-hdr">
+      <div class="badge">TÜBİTAK · Bilim Fuarları</div>
+      <div class="title">TEMPO KARŞILAŞTIRMASI</div>
+    </div>
+    <div style="width:100%;">${barSVG}</div>
+    <div class="cap">// Şekil 2 — Tempo Bazında Ortalama Adım Uzunluğu</div>
+  </div>
+</div>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  window.open(url,'_blank','width=1000,height=800');
+  setTimeout(()=>URL.revokeObjectURL(url),120000);
+}
+
+/* ══ SONUÇ ══ */
+function renderSonuc(){
+  updateStats(); updateAdminUI();
+  const empty=(t,s)=>`<div class="empty"><div class="empty-big">${t}</div><div class="empty-sub">${s}</div></div>`;
+  if(!veriler.length){
+    document.getElementById('sonuc-yorum').innerHTML=empty('VERİ BEKLENİYOR','// Ölçümler girilince sonuçlar burada görünür');
+    document.getElementById('rapor-content').innerHTML=empty('—','// En az 3 ölçüm gerekli');
+    return;
+  }
+  if(veriler.length<3){
+    document.getElementById('sonuc-yorum').innerHTML=empty('YETERSİZ VERİ','// Daha fazla ölçüm gerekli');
+    document.getElementById('rapor-content').innerHTML=empty('—','// En az 3 ölçüm gerekli');
+    return;
+  }
+  const yavas=veriler.filter(v=>v.tempo==='yavas');
+  const normal=veriler.filter(v=>v.tempo==='normal');
+  const hizli=veriler.filter(v=>v.tempo==='hizli');
+  const g=(arr,k)=>arr.length?(arr.reduce((s,v)=>s+v[k],0)/arr.length).toFixed(k==='hiz'?2:3):null;
+  const ortYH=g(yavas,'hiz'),ortNH=g(normal,'hiz'),ortHH=g(hizli,'hiz');
+  const ortYA=g(yavas,'adimUz'),ortNA=g(normal,'adimUz'),ortHA=g(hizli,'adimUz');
+  let yorum=`<div class="result-card"><div class="result-hdr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>BULGULAR</div><div class="result-body">`;
+  if(ortYA&&ortHA){
+    const fark=((parseFloat(ortHA)-parseFloat(ortYA))/parseFloat(ortYA)*100).toFixed(1);
+    const poz=parseFloat(fark)>0;
+    yorum+=`<p>Yürüyüş hızı arttıkça adım uzunluğunun da <span class="hl">${poz?'arttığı':'azaldığı'}</span> gözlemlendi.</p>`;
+    yorum+=`<p>🐢 Yavaş → <span class="num-t">${ortYA} m</span> &nbsp;(ort. hız: <span class="num-t">${ortYH} m/s</span>)</p>`;
+    if(ortNA) yorum+=`<p>🚶 Normal → <span class="num-b">${ortNA} m</span> &nbsp;(ort. hız: <span class="num-b">${ortNH} m/s</span>)</p>`;
+    yorum+=`<p>🏃 Hızlı → <span class="num">${ortHA} m</span> &nbsp;(ort. hız: <span class="num">${ortHH} m/s</span>)</p>`;
+    yorum+=`<p style="margin-top:10px;">Yavaş tempoya kıyasla hızlı tempoda adım uzunluğu <span class="num">%${Math.abs(fark)}</span> ${poz?'artmıştır':'azalmıştır'}.</p>`;
+    yorum+=`<p>Hız ile adım uzunluğu arasında ${parseFloat(fark)>8?'<span class="hl">güçlü bir pozitif doğrusal ilişki</span>':'<span class="hl">pozitif bir ilişki</span>'} gözlemlenmektedir.</p>`;
+  } else { yorum+=`<p>Her üç tempodan da veri eklendiğinde tam karşılaştırma yapılabilir.</p>`; }
+  yorum+=`</div></div>`;
+  document.getElementById('sonuc-yorum').innerHTML=yorum;
+  const ortH=(veriler.reduce((s,v)=>s+v.hiz,0)/veriler.length).toFixed(2);
+  const ortA=(veriler.reduce((s,v)=>s+v.adimUz,0)/veriler.length).toFixed(2);
+  let rapor=`<div class="result-card" style="font-size:13px;"><div class="result-hdr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PROJE RAPORU</div><div class="result-body">
+  <p style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-bottom:12px;">Adım Uzunluğu ve Hız Arasındaki İlişki · Araştırma · Matematik</p>
+  <p><span class="hl">Toplam:</span> <span class="num">${veriler.length}</span> ölçüm &nbsp;·&nbsp; <span class="hl">Ort. hız:</span> <span class="num">${ortH} m/s</span> &nbsp;·&nbsp; <span class="hl">Ort. adım:</span> <span class="num">${ortA} m</span></p>`;
+  if(ortYA||ortNA||ortHA){
+    rapor+=`<div class="result-mini"><div class="result-mini-title">Tempo Bazında Özet</div>`;
+    if(ortYA) rapor+=`<p><span style="color:var(--teal);font-weight:700;">YAVAŞ</span> → <span class="num-t">${ortYH} m/s</span> | <span class="num-t">${ortYA} m</span> (n=${yavas.length})</p>`;
+    if(ortNA) rapor+=`<p><span style="color:var(--blue);font-weight:700;">NORMAL</span> → <span class="num-b">${ortNH} m/s</span> | <span class="num-b">${ortNA} m</span> (n=${normal.length})</p>`;
+    if(ortHA) rapor+=`<p><span style="color:var(--accent);font-weight:700;">HIZLI</span> → <span class="num">${ortHH} m/s</span> | <span class="num">${ortHA} m</span> (n=${hizli.length})</p>`;
+    rapor+=`</div>`;
+  }
+  rapor+=`</div></div>`;
+  document.getElementById('rapor-content').innerHTML=rapor;
+}
+
+/* ══ RAPOR YAZDIR ══ */
+function raporGoster(){
+  if(!veriler.length){ alert('Veri yok.'); return; }
+  const yavas=veriler.filter(v=>v.tempo==='yavas'),normal=veriler.filter(v=>v.tempo==='normal'),hizli=veriler.filter(v=>v.tempo==='hizli');
+  const g=(arr,k)=>arr.length?(arr.reduce((s,v)=>s+v[k],0)/arr.length).toFixed(k==='hiz'?2:3):'—';
+  const ortH=(veriler.reduce((s,v)=>s+v.hiz,0)/veriler.length).toFixed(2);
+  const ortA=(veriler.reduce((s,v)=>s+v.adimUz,0)/veriler.length).toFixed(2);
+  const ortYH=g(yavas,'hiz'),ortNH=g(normal,'hiz'),ortHH=g(hizli,'hiz');
+  const ortYA=g(yavas,'adimUz'),ortNA=g(normal,'adimUz'),ortHA=g(hizli,'adimUz');
+
+  // SVG grafikler
+  // Katmanlar (yukarıdan aşağıya):
+  //   t=20  → grafik alanı üstü
+  //   ph    → grafik yüksekliği
+  //   +18   → x tick sayıları
+  //   +16   → "Hız (m/s)" etiketi
+  //   +20   → legend
+  //   toplam alt boşluk = 54
+  const PAD={l:54,r:20,t:20,b:54},W=520,H=290;
+  const pw=W-PAD.l-PAD.r,ph=H-PAD.t-PAD.b;
+  const allH=veriler.map(v=>v.hiz),allA=veriler.map(v=>v.adimUz);
+  const minH=Math.min(...allH),maxH=Math.max(...allH),minA=Math.min(...allA),maxA=Math.max(...allA);
+  const rH=maxH-minH||1,rA=maxA-minA||1;
+  const px=h=>PAD.l+((h-minH)/rH)*pw, py=a=>PAD.t+ph-((a-minA)/rA)*ph;
+  const clr={yavas:'#006d5b',normal:'#1a3a6b',hizli:'#c8371a'};
+  let sg='',dots='',legend='';
+  for(let i=0;i<=4;i++){
+    const xv=(minH+rH*i/4).toFixed(2);
+    const yv=(minA+rA*(1-i/4)).toFixed(3);
+    sg+=`<line x1="${PAD.l+pw*i/4}" y1="${PAD.t}" x2="${PAD.l+pw*i/4}" y2="${PAD.t+ph}" stroke="#eae6de" stroke-width="1"/>`;
+    sg+=`<text x="${PAD.l+pw*i/4}" y="${PAD.t+ph+13}" text-anchor="middle" font-size="9" fill="#7a7060" font-family="monospace">${xv}</text>`;
+    sg+=`<line x1="${PAD.l}" y1="${PAD.t+ph*i/4}" x2="${PAD.l+pw}" y2="${PAD.t+ph*i/4}" stroke="#eae6de" stroke-width="1"/>`;
+    sg+=`<text x="${PAD.l-4}" y="${PAD.t+ph*i/4+3}" text-anchor="end" font-size="9" fill="#7a7060" font-family="monospace">${yv}</text>`;
+  }
+  sg+=`<line x1="${PAD.l}" y1="${PAD.t+ph}" x2="${PAD.l+pw}" y2="${PAD.t+ph}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  sg+=`<line x1="${PAD.l}" y1="${PAD.t}" x2="${PAD.l}" y2="${PAD.t+ph}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  // x ekseni etiketi — tick'lerin altında
+  sg+=`<text x="${PAD.l+pw/2}" y="${PAD.t+ph+28}" text-anchor="middle" font-size="10" fill="#7a7060" font-family="monospace">Hız (m/s)</text>`;
+  // y ekseni etiketi
+  sg+=`<text x="12" y="${PAD.t+ph/2}" text-anchor="middle" font-size="10" fill="#7a7060" font-family="monospace" transform="rotate(-90,12,${PAD.t+ph/2})">Adım (m)</text>`;
+  if(veriler.length>=2){ sg+=`<line x1="${px(minH+rH*0.05)}" y1="${py(minA+rA*0.05)}" x2="${px(minH+rH*0.95)}" y2="${py(minA+rA*0.95)}" stroke="#c8371a" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.5"/>`; }
+  // Legend — x ekseninin en altında, ayrı satır
+  ['yavas','normal','hizli'].forEach((t,ti)=>{
+    const lbl=t==='yavas'?'Yavaş':t==='normal'?'Normal':'Hızlı';
+    const lx=PAD.l+ti*110;
+    legend+=`<rect x="${lx}" y="${H-16}" width="10" height="10" rx="2" fill="${clr[t]}"/>`;
+    legend+=`<text x="${lx+14}" y="${H-7}" font-size="10" fill="#0d0d0d" font-family="monospace">${lbl}</text>`;
+    veriler.filter(v=>v.tempo===t).forEach(v=>{
+      dots+=`<circle cx="${px(v.hiz)}" cy="${py(v.adimUz)}" r="7" fill="${clr[t]}" opacity="0.85"/><circle cx="${px(v.hiz)}" cy="${py(v.adimUz)}" r="2.5" fill="#fff"/>`;
+    });
+  });
+  const scatterSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%">${sg}${dots}${legend}</svg>`;
+
+  const BW=520,BH=190,BP={l:50,r:20,t:16,b:34};
+  const bTempos=['yavas','normal','hizli'],bLabels=['Yavaş','Normal','Hızlı'],bColors=['#006d5b','#1a3a6b','#c8371a'];
+  const bVals=[ortYA,ortNA,ortHA].map(v=>v==='—'?0:parseFloat(v));
+  const bMax=Math.max(...bVals,0.1),bph2=BH-BP.t-BP.b;
+  const barW=56,barGap=(BW-BP.l-BP.r-bTempos.length*barW)/(bTempos.length+1);
+  let bg='',bars='';
+  for(let i=0;i<=4;i++){
+    const y=BP.t+bph2*i/4;
+    bg+=`<line x1="${BP.l}" y1="${y}" x2="${BW-BP.r}" y2="${y}" stroke="#eae6de" stroke-width="1"/>`;
+    bg+=`<text x="${BP.l-4}" y="${y+4}" text-anchor="end" font-size="9" fill="#7a7060" font-family="monospace">${(bMax*(1-i/4)).toFixed(2)}</text>`;
+  }
+  bg+=`<line x1="${BP.l}" y1="${BP.t}" x2="${BP.l}" y2="${BP.t+bph2}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  bg+=`<line x1="${BP.l}" y1="${BP.t+bph2}" x2="${BW-BP.r}" y2="${BP.t+bph2}" stroke="#c8bfaa" stroke-width="1.5"/>`;
+  bTempos.forEach((t,i)=>{
+    const x=BP.l+barGap*(i+1)+barW*i,val=bVals[i],bh=(val/bMax)*bph2,by=BP.t+bph2-bh;
+    bars+=`<rect x="${x}" y="${by}" width="${barW}" height="${bh}" rx="4" fill="${bColors[i]}" opacity="0.85"/>`;
+    bars+=`<text x="${x+barW/2}" y="${by-5}" text-anchor="middle" font-size="10" fill="${bColors[i]}" font-family="monospace" font-weight="bold">${val||'—'}</text>`;
+    bars+=`<text x="${x+barW/2}" y="${BP.t+bph2+14}" text-anchor="middle" font-size="10" fill="#7a7060" font-family="monospace">${bLabels[i]}</text>`;
+  });
+  const barSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BW} ${BH}" width="100%">${bg}${bars}</svg>`;
+
+  // Tablo (admin → tam isim, yoksa maskeli)
+  const satirlar=veriler.map((v,i)=>{
+    const t=v.tempo==='yavas'?'Yavaş':v.tempo==='normal'?'Normal':'Hızlı';
+    const c=clr[v.tempo]; const adGoster=maskeName(v.ad);
+    return `<tr><td>${String(i+1).padStart(2,'0')}</td><td><strong>${adGoster}</strong></td>
+      <td><span style="color:${c};font-weight:700;">${t.toUpperCase()}</span></td>
+      <td>${v.mesafe} m</td><td>${v.sure} s</td><td>${v.adim}</td>
+      <td style="color:#c8371a;font-weight:600;">${v.hiz}</td>
+      <td style="color:#006d5b;font-weight:600;">${v.adimUz}</td></tr>`;
+  }).join('');
+
+  let bulgular='';
+  if(ortYA!=='—'&&ortHA!=='—'){
+    const fark=((parseFloat(ortHA)-parseFloat(ortYA))/parseFloat(ortYA)*100).toFixed(1);
+    const poz=parseFloat(fark)>0;
+    bulgular=`Yürüyüş hızı arttıkça adım uzunluğunun da <strong>${poz?'arttığı':'azaldığı'}</strong> gözlemlendi. Yavaş tempoya kıyasla hızlı tempoda adım uzunluğu <strong>%${Math.abs(fark)}</strong> ${poz?'artmıştır':'azalmıştır'}. Hız ile adım uzunluğu arasında ${parseFloat(fark)>8?'<strong>güçlü bir pozitif doğrusal ilişki</strong>':'<strong>pozitif bir ilişki</strong>'} gözlemlenmektedir.`;
+  } else { bulgular='Her üç tempodan da veri eklendiğinde tam karşılaştırma yapılabilir.'; }
+
+  const html=`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"/><title>TÜBİTAK Raporu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Space Grotesk',sans-serif;background:#fff;color:#0d0d0d;}
+.page{max-width:760px;margin:0 auto;padding:38px 44px;}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.page{padding:16px 22px;}.no-break{page-break-inside:avoid;}}
+.rp-hdr{border-bottom:3px solid #0d0d0d;padding-bottom:16px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;}
+.rp-badge{background:#c8371a;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:6px;text-transform:uppercase;}
+.rp-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:3px;line-height:1;}
+.rp-title span{color:#c8371a;}
+.rp-meta{text-align:right;flex-shrink:0;}
+.rp-meta div{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#7a7060;margin-bottom:2px;}
+.rp-meta strong{color:#0d0d0d;}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;margin:18px 0 9px;padding-bottom:6px;border-bottom:1.5px solid #ddd8ce;display:flex;align-items:center;gap:8px;}
+.snum{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#c8371a;background:rgba(200,55,26,0.08);padding:2px 6px;border-radius:2px;}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.metric{border:1.5px solid #ddd8ce;border-radius:6px;padding:10px;position:relative;overflow:hidden;}
+.metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.m1::after{background:#0d0d0d;}.m2::after{background:#c8371a;}.m3::after{background:#006d5b;}.m4::after{background:#b8860b;}
+.mlbl{font-family:'IBM Plex Mono',monospace;font-size:7px;color:#7a7060;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.mval{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;color:#0d0d0d;word-break:break-all;}
+.munit{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#7a7060;margin-top:2px;}
+.tempo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.tc{border-radius:6px;padding:11px 13px;}
+.tc-y{background:rgba(0,109,91,0.07);border:1.5px solid rgba(0,109,91,0.2);}
+.tc-n{background:rgba(26,58,107,0.07);border:1.5px solid rgba(26,58,107,0.2);}
+.tc-h{background:rgba(200,55,26,0.07);border:1.5px solid rgba(200,55,26,0.2);}
+.tc-lbl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;margin-bottom:5px;}
+.tc-y .tc-lbl{color:#006d5b;}.tc-n .tc-lbl{color:#1a3a6b;}.tc-h .tc-lbl{color:#c8371a;}
+.tc-row{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#0d0d0d;margin-bottom:2px;}
+.tc-cnt{font-size:8px;color:#7a7060;margin-top:3px;font-family:'IBM Plex Mono',monospace;}
+.bul{background:#f5f2ec;border-left:4px solid #c8371a;border-radius:0 6px 6px 0;padding:12px 16px;margin-bottom:14px;font-size:12px;line-height:1.8;}
+.chart-blk{margin-bottom:14px;border:1px solid #eae6de;border-radius:8px;padding:12px;}
+.chart-cap{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#7a7060;text-align:center;margin-top:6px;}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px;}
+thead tr{background:#0d0d0d;}
+th{padding:7px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:7px;font-weight:500;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+td{padding:7px 8px;border-bottom:1px solid #eae6de;}
+tbody tr:nth-child(even) td{background:#f9f7f4;}
+.rp-foot{border-top:1px solid #ddd8ce;margin-top:20px;padding-top:10px;display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:8px;color:#7a7060;}
+</style></head><body><div class="page">
+<div class="rp-hdr no-break">
+  <div><div class="rp-badge">TÜBİTAK · Bilim Fuarları Destekleme Programı</div>
+  <div class="rp-title">ADIM UZUNLUĞU<br>& <span>HIZ</span> ANALİZİ</div></div>
+  <div class="rp-meta">
+    <div>Tür: <strong>Araştırma</strong></div><div>Alan: <strong>Matematik</strong></div>
+    <div>Ölçüm: <strong>${veriler.length} adet</strong></div>
+  </div>
+</div>
+<div class="stitle no-break"><span class="snum">01</span> GENEL İSTATİSTİKLER</div>
+<div class="metrics no-break">
+  <div class="metric m1"><div class="mlbl">Toplam Ölçüm</div><div class="mval">${veriler.length}</div><div class="munit">adet</div></div>
+  <div class="metric m2"><div class="mlbl">Ortalama Hız</div><div class="mval">${ortH}</div><div class="munit">m/s</div></div>
+  <div class="metric m3"><div class="mlbl">Ort. Adım Uz.</div><div class="mval">${ortA}</div><div class="munit">metre</div></div>
+  <div class="metric m4"><div class="mlbl">Hız:Adım</div><div class="mval">${(ortH/ortA).toFixed(2)}</div><div class="munit">oranı</div></div>
+</div>
+<div class="stitle no-break"><span class="snum">02</span> TEMPO BAZINDA KARŞILAŞTIRMA</div>
+<div class="tempo-grid no-break">
+  <div class="tc tc-y"><div class="tc-lbl">🐢 YAVAŞ</div><div class="tc-row">Ort. Hız: <strong>${ortYH} m/s</strong></div><div class="tc-row">Ort. Adım: <strong>${ortYA} m</strong></div><div class="tc-cnt">${yavas.length} ölçüm</div></div>
+  <div class="tc tc-n"><div class="tc-lbl">🚶 NORMAL</div><div class="tc-row">Ort. Hız: <strong>${ortNH} m/s</strong></div><div class="tc-row">Ort. Adım: <strong>${ortNA} m</strong></div><div class="tc-cnt">${normal.length} ölçüm</div></div>
+  <div class="tc tc-h"><div class="tc-lbl">🏃 HIZLI</div><div class="tc-row">Ort. Hız: <strong>${ortHH} m/s</strong></div><div class="tc-row">Ort. Adım: <strong>${ortHA} m</strong></div><div class="tc-cnt">${hizli.length} ölçüm</div></div>
+</div>
+<div class="stitle no-break"><span class="snum">03</span> BULGULAR & YORUM</div>
+<div class="bul no-break">${bulgular}</div>
+<div class="stitle no-break"><span class="snum">04</span> GRAFİKLER</div>
+<div class="chart-blk no-break">${scatterSVG}<div class="chart-cap">// Şekil 1 — Hız ve Adım Uzunluğu Dağılım Grafiği (Scatter)</div></div>
+<div class="chart-blk no-break">${barSVG}<div class="chart-cap">// Şekil 2 — Tempo Bazında Ortalama Adım Uzunluğu</div></div>
+<div class="stitle"><span class="snum">05</span> HAM VERİ TABLOSU</div>
+<table><thead><tr><th>#</th><th>Ad</th><th>Tempo</th><th>Mesafe</th><th>Süre</th><th>Adım</th><th>Hız m/s</th><th>Adım Uz. m</th></tr></thead>
+<tbody>${satirlar}</tbody></table>
+<div class="rp-foot"><span>TÜBİTAK Bilim Fuarları · Araştırma Projesi</span><span>Adım Uzunluğu &amp; Hız</span></div>
+</div></body></html>`;
+
+  document.getElementById('print-frame').srcdoc=html;
+  document.getElementById('print-overlay').classList.add('show');
+}
+
+/* ══ EXCEL ══ */
+function excelIndir(){
+  if(!isAdmin){ alert('Excel indirmek için admin girişi gerekli.'); return; }
+  if(!veriler.length){ alert('Veri yok.'); return; }
+  let csv='Sıra,Ad,Tempo,Mesafe (m),Süre (sn),Adım,Hız (m/s),Adım Uzunluğu (m)\n';
+  veriler.forEach((v,i)=>{
+    const t=v.tempo==='yavas'?'Yavaş':v.tempo==='normal'?'Normal':'Hızlı';
+    csv+=`${i+1},"${v.ad}",${t},${v.mesafe},${v.sure},${v.adim},${v.hiz},${v.adimUz}\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='adim_hiz_veriler.csv'; a.click();
+}
+
+/* ══ VERİLERLE BİRLİKTE KAYDET ══ */
+async function dosyaOlarakKaydet(){
+  if(!isAdmin){ alert('Bu işlem için admin girişi gerekli.'); return; }
+  if(!veriler.length){ alert('Kaydedilecek veri yok.'); return; }
+
+  // Veriyi JSON olarak güvenli biçimde hazırla
+  const veriJson = JSON.stringify(veriler)
+    .replace(/\\/g,'\\\\')
+    .replace(/`/g,'\\`')
+    .replace(/\${/g,'\\${');
+
+  const embedBlok = '/* __EMBED_START__ */ veriler = JSON.parse(`' + veriJson + '`); try{ localStorage.setItem(SK, encodeData(veriler)); }catch(e){} /* __EMBED_END__ */';
+
+  let kaynak = null;
+
+  // 1. Önce fetch ile dene (http/https protokolünde çalışır)
+  if(window.location.protocol !== 'file:'){
+    try{
+      const resp = await fetch(window.location.href);
+      if(resp.ok) kaynak = await resp.text();
+    }catch(e){}
+  }
+
+  if(kaynak){
+    // Önceki gömülü veriyi temizle
+    kaynak = kaynak.replace(
+      /\/\* __EMBED_START__ \*\/[\s\S]*?\/\* __EMBED_END__ \*\//g,
+      '/* __EMBED_START__ */'
+    );
+    kaynak = kaynak.replace('/* __EMBED_START__ */', embedBlok);
+  } else {
+    // 2. file:// protokolü veya fetch başarısız → sayfanın tüm script kaynaklarını topla
+    // Tüm <script> taglerini scripts dizisine al, sonra HTML'i yeniden inşa et
+    const scripts = Array.from(document.scripts);
+    // Ana script (inline, en uzun olanı bul)
+    let anaScript = '';
+    for(const s of scripts){
+      if(!s.src && s.textContent.length > anaScript.length) anaScript = s.textContent;
+    }
+
+    // Embed marker'ı ana script içinde değiştir
+    let yeniScript = anaScript;
+    // Önceki gömülü veri varsa temizle
+    yeniScript = yeniScript.replace(
+      /\/\* __EMBED_START__ \*\/[\s\S]*?\/\* __EMBED_END__ \*\//g,
+      '/* __EMBED_START__ */'
+    );
+    if(!yeniScript.includes('/* __EMBED_START__ */')){
+      yeniScript = yeniScript.replace('let veriler=[];', 'let veriler=[];\n/* __EMBED_START__ */');
+    }
+    yeniScript = yeniScript.replace('/* __EMBED_START__ */', embedBlok);
+
+    // Orijinal HTML'i script içeriği güncellenmiş halde yeniden oluştur
+    // document.documentElement.outerHTML'deki inline script'i değiştirilmiş versiyonla swap et
+    kaynak = document.documentElement.outerHTML;
+    // Kaçış karakterlerini normalize et ve script bloğunu değiştir
+    const scriptRe = /<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/gi;
+    let enUzunScript = '', enUzunMatch = '';
+    let m;
+    while((m = scriptRe.exec(kaynak)) !== null){
+      if(m[1].length > enUzunScript.length){ enUzunScript = m[1]; enUzunMatch = m[0]; }
+    }
+    if(enUzunMatch){
+      const yeniTag = enUzunMatch.replace(enUzunScript, yeniScript);
+      kaynak = kaynak.replace(enUzunMatch, yeniTag);
+    }
+  }
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([kaynak], {type:'text/html;charset=utf-8;'}));
+  a.download = 'adim_hiz_site.html';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 10000);
+  alert('✓ Dosya hazırlandı!\n\nDosyayı arkadaşına veya kendin GitHub\'a yükle.\nAçıldığında veriler zaten içinde hazır olacak.');
+}
+</script>
+</body>
+</html>
